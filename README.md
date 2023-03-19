@@ -8,3 +8,9 @@ One of the key features of SafeSender is its ease of use. The platform has a cle
 SafeSender is also highly secure. It uses advanced encryption technologies to protect all data, and also provides users with features such as two-factor authentication and user-based access controls. This means that users can control who has access to their files and ensure that sensitive information is only shared with authorized individuals.
 
 Overall, SafeSender is a powerful and user-friendly file-sharing platform that prioritizes security and ease of use. Whether you need to share files with colleagues, clients, or friends, SafeSender has you covered.
+
+# UI Concept 
+
+https://www.figma.com/file/VU5zOhAY2JeWu3FVEGwQ2a/SafeSender?node-id=1-12&t=pXWGtR4j65w9R2c4-4
+
+
