@@ -2,10 +2,18 @@ import Head from 'next/head'
 import { Poppins } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { Header } from '../components/shared/header/Header';
+import { ThemeProvider, useTheme } from '../core/context/ThemeContext';
+import waves from '../../public/Group (1).svg';
+import Image from 'next/image';
 
 const poppinsFont = Poppins( { weight: [ '400', '500', '600' ], subsets: [ 'latin' ] } );
 
 export default function Home() {
+
+  const theme = useTheme();
+
+  console.log(theme.darkMode);
+
   return (
     <>
       <Head>
@@ -15,12 +23,18 @@ export default function Home() {
         <link rel="icon" href="/logo.svg" />
       </Head>
 
-      <Header />
+      <ThemeProvider>
+        <div className={`${ theme.darkMode ? 'dark' : '' }`}>
+          <Header />
 
-      <main className='bg-[#F5F5F5] h-56'>
+          <main className='bg-blue h-[800px] dark:bg-black overflow-hidden'>
+          
+            <Image className='ml-[0px] mt-[-50px] w-full object-fill' src={waves} alt='bg'></Image>
 
+          </main>
+        </div>
 
-      </main>
+      </ThemeProvider>
     </>
   )
 }
