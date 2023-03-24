@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import logo from '../../../../public/logo2.svg';
 import { useEffect, useState } from 'react';
-import { Toggle } from '../toggle/Toggle';
+import { ThemeToggle } from '../themeToggle/ThemeToggle';
 import { AppTheme } from '../../../models/themes';
 import { useTheme } from '../../../core/context/ThemeContext';
 
@@ -19,7 +19,7 @@ export const Header = () => {
     }
 
     return (
-        <header className={`h-[56px] justify-between flex items-center bg-blue dark:bg-black`}>
+        <header className={`h-[62px] justify-between flex items-center bg-blue dark:bg-black`}>
             
             <div className='ml-[67px] flex items-center justify-center'>
                 <div>
@@ -31,7 +31,7 @@ export const Header = () => {
             </div>
 
             <div className='mr-[64px]'>
-                <Toggle darkMode={themeContext.darkMode} clickHandler={switchThemeHandler} />
+                <ThemeToggle darkMode={themeContext.darkMode} clickHandler={switchThemeHandler} />
             </div>
 
         </header>
