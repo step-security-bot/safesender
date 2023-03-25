@@ -1,13 +1,38 @@
 import Image from 'next/image';
 import loadIcoBlack from '../../public/loadIcoBlack.svg';
 import loadIcoBlue from '../../public/loadIcoBlue.svg';
+import eyeOpen from '../../public/eye-open.svg';
+import eyeClose from '../../public/eye-close.svg';
+import shareIco from '../../public/shareIco.svg';
 import { useTheme } from '../core/context/ThemeContext';
 import { SimpleToggle } from '../components/shared/simpleToggle/SimpleToggle';
+import { LegacyRef, MutableRefObject, useRef, useState } from 'react';
+
 
 
 export const MainBox = () => {
 
+    const [ isGeneratePassActive, setIsGeneratePassActive ] = useState<boolean>( false );
+    const [ isHidePass, setIsHidePass ] = useState<boolean>( true );
+
+    const inpRef = useRef<any>();
+
     const theme = useTheme();
+
+    const generatePassToggleClicked = ( isActive: boolean ): void => {
+        setIsGeneratePassActive( isActive );
+    };
+
+    const eyeClicked = (): void => {
+
+        if (!isHidePass) {
+            inpRef.current.type = 'password';
+        } else {
+            inpRef.current.type = 'text';
+        }
+        setIsHidePass( !isHidePass );
+
+    };
 
     return (
         <div className='w-[563px]'>
@@ -58,9 +83,41 @@ export const MainBox = () => {
 
                     <div className='relative'>
 
-                        <div className="relative left-[-10px] w-[225px] flex items-center justify-between toggle-box pt-[24px] pb-[24px] box-border">
-                            <SimpleToggle clickHandler={() => console.log( 'toggleClicked!' )} />
+                        <div className="relative left-[-10px] w-[225px] flex items-center justify-between toggle-box pt-[10px] pb-[8px] box-border">
+                            <SimpleToggle state={isGeneratePassActive} clickHandler={generatePassToggleClicked} />
                             <div className='text-gray text-[18px]'>Generate a password</div>
+                        </div>
+
+                        <div>
+
+                            <label className='text-[16px] font-bold flex flex-col relative'>
+                                <span className='pb-[5px]'>Password</span>
+
+                                <input
+                                    ref={inpRef}
+                                    type="password"
+                                    placeholder='Enter password'
+                                    className='border-[1px] text-[18px] font-normal
+                                    rounded-[8px] 
+                                    border-gray p-[20px] box-border' />
+
+                                <Image
+                                    className='absolute right-[6%] top-[55%] opacity-50'
+                                    src={isHidePass ? eyeClose : eyeOpen}
+                                    onClick={eyeClicked}
+                                    alt='eye' />
+
+                            </label>
+
+                            <div className='pt-[4px] pb-[15px] pl-[2px] text-[14px] font-normal text-gray'>
+                                Enter a password that includes at least one uppercase letter, one number, and one symbol (such as !@#$%^&*)
+                            </div>
+
+                            <label className='dark:bg-black bg-blue text-white border-[3px] rounded-[8px] h-[64px] flex items-center justify-center cursor-pointer text-[18px] font-bold dark:text-white'>
+                                <div className='flex items-center '><Image className='mr-[8.5px]' src={shareIco} alt='share' /> Share</div>
+                                <input type="file" className='hidden' />
+                            </label>
+
                         </div>
 
 
