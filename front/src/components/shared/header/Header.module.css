@@ -1,0 +1,47 @@
+.test {
+    transform: translate(30px);
+    transition: all 0.2s ease-in;
+}
+
+.blueBorder {
+    stroke: #2367ea;
+    transition: all 0.2s ease-in;
+}
+
+.whiteBorder {
+    stroke: white;
+    transition: all 0.2s ease-out;
+}
+
+.darkDisable {
+    transform: translate(0);
+    transition: all 0.2s ease-in;
+}
+
+.darkEnable {
+    transform: translate(11px);
+    transition: all 0.2s ease-in;
+    stroke: white;
+    background: white;
+}
+
+.darkCircle {
+    fill: white;
+    transition: all 0.2s ease-in;
+}
+
+.lightCircle {
+    fill: #2367ea;
+    transition: all 0.2s ease-in;
+}
+
+.moonActive {
+    opacity: 1;
+    transform: translate(5px,4px);
+    transition: all 0.2s ease-in;
+}
+
+.moonDisabled {
+    opacity: 0;
+    transition: all 0.2s ease-in;
+}
