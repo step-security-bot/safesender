@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using SafeSenderApi.Interfaces;
+using SafeSender.StorageAPI.Interfaces;
 
-namespace SafeSenderApi.Repositories;
+namespace SafeSender.StorageAPI.Repositories;
 
 public class FileSystemRepository : IFilesRepository
 {

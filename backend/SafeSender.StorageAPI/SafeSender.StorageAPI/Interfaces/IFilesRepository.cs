@@ -1,4 +1,4 @@
-namespace SafeSenderApi.Interfaces;
+namespace SafeSender.StorageAPI.Interfaces;
 
 public interface IFilesRepository
 {

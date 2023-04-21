@@ -1,4 +1,4 @@
-namespace SafeSenderApi.Repositories;
+namespace SafeSender.StorageAPI.Repositories;
 
 public class ExternalStorageRepository
 {
