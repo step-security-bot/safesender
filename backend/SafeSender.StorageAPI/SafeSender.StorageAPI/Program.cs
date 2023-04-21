@@ -19,6 +19,6 @@ app.UseHttpsRedirection();
 app.MapGet("/upload", () =>
 {
 })
-.WithName("GetWeatherForecast");
+.WithName("UploadFile");
 
 app.Run();
