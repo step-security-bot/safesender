@@ -1,7 +1,9 @@
+using SafeSender.StorageAPI.Models;
+
 namespace SafeSender.StorageAPI.Interfaces;
 
 public interface IFilesRepository
 {
-    Task<byte[]> GetFileBytes(string fileName);
-    void SaveFileBytes(string fileName, byte[] fileData);
+    Task<byte[]> GetFileBytes(string fileHash);
+    Task<FileSaveInfo> SaveFileBytes(string fileName, byte[] fileData);
 }
