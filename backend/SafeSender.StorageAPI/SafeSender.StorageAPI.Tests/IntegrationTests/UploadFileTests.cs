@@ -1,3 +1,4 @@
+using System.Text;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
@@ -14,10 +15,11 @@ public class UploadFileTests
     public async Task UploadFile_FileUploaded_Returns201StatusCode()
     {
         var client = SystemUnderTest.GetClient();
+        var uploadedFileMock = Encoding.UTF8.GetBytes("mock test string 123");
 
         using var response = await client.Request(UploadEndpointUrl).PostJsonAsync(new UploadFileRequestModel
         {
-            FileBytes = File.ReadAllBytes(@"D:\Programming\CSharp\text.txt"),
+            FileBytes = uploadedFileMock,
             FileName = "text.txt",
             PasswordHash = Guid.NewGuid().ToString("N"),
         });

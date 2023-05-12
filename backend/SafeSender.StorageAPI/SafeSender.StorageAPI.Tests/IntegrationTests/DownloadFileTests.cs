@@ -1,3 +1,4 @@
+using System.Text;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
@@ -12,11 +13,11 @@ public class DownloadFileTests
     public async Task DownloadFile_CorrectTokenProvided_ReturnsFile()
     {
         var client = SystemUnderTest.GetClient();
-        var uploadedFile = File.ReadAllBytes(@"D:\Programming\CSharp\text.txt");
-
+        var uploadedFileMock = Encoding.UTF8.GetBytes("mock test string 123");
+        
         using var response = await client.Request(ApiConstants.UploadEndpointUrl).PostJsonAsync(new UploadFileRequestModel
         {
-            FileBytes = uploadedFile,
+            FileBytes = uploadedFileMock,
             FileName = "text.txt",
             PasswordHash = Guid.NewGuid().ToString("N"),
         });
@@ -27,7 +28,7 @@ public class DownloadFileTests
 
         var downloadedFile = await downloadResponse.GetBytesAsync();
         
-        Assert.AreEqual(uploadedFile, downloadedFile);
+        Assert.AreEqual(uploadedFileMock, downloadedFile);
         Assert.AreEqual(downloadResponse.StatusCode, StatusCodes.Status200OK);
     }
 }
