@@ -3,6 +3,7 @@ using Flurl.Http;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 using SafeSender.StorageAPI.Models;
+using SafeSender.StorageAPI.Models.ApiModels;
 
 namespace SafeSender.StorageAPI.Tests.IntegrationTests;
 
@@ -25,10 +26,9 @@ public class DownloadFileTests
         response.Headers.TryGetFirst("Location", out var location);
         
         var downloadResponse = await client.Request(location).GetAsync();
+        var downloadFileModel = await downloadResponse.GetJsonAsync<DownloadFileResponseModel>();
 
-        var downloadedFile = await downloadResponse.GetBytesAsync();
-        
-        Assert.AreEqual(uploadedFileMock, downloadedFile);
+        Assert.AreEqual(uploadedFileMock, downloadFileModel.FileBytes);
         Assert.AreEqual(downloadResponse.StatusCode, StatusCodes.Status200OK);
     }
 }

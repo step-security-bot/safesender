@@ -64,6 +64,7 @@ public class FilesService : IFilesService
         {
             FileBytes = fileBytes,
             FileName = fileInternalInfo.FileName,
+            PasswordHash = fileInternalInfo.PasswordHash,
         };
     }
 }

@@ -62,7 +62,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
 app.MapGet("api/download/{token}", async (
-        [Required] string token, 
+        [Required] string token,
         [FromServices] IFilesService filesService) =>
     {
         if(string.IsNullOrEmpty(token))
@@ -70,12 +70,12 @@ app.MapGet("api/download/{token}", async (
             return Results.BadRequest();
         }
         
-        var fileBytes = await filesService.DownloadFile(token);
+        var downloadFileModel = await filesService.DownloadFile(token);
         
-        return Results.File(fileBytes.FileBytes, "application/octet-stream", fileBytes.FileName);
+        return Results.Ok(downloadFileModel);
     })
     .WithName("GetFile")
-    .Produces<FileContentResult>()
+    .Produces<DownloadFileResponseModel>()
     .Produces(StatusCodes.Status400BadRequest);
 
 app.MapPost("api/upload", async (

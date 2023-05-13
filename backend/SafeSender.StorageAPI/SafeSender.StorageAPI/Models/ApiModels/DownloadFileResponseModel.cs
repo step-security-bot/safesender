@@ -11,6 +11,11 @@ public class DownloadFileResponseModel
     public byte[] FileBytes { get; set; } = default!;
 
     /// <summary>
+    /// Password for file hash
+    /// </summary>
+    public string PasswordHash { get; set; } = default!;
+
+    /// <summary>
     /// File name with extension
     /// </summary>
     public string FileName { get; set; } = default!;
