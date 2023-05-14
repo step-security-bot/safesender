@@ -15,6 +15,12 @@ public class FilesService : IFilesService
     private readonly IFilesInternalInfosRepository _filesInternalInfosRepository;
     private readonly IOptionsMonitor<StorageOptions> _storageOptions;
 
+    /// <summary>
+    /// Constructor for <see cref="FilesService"/>
+    /// </summary>
+    /// <param name="filesRepository">Files repository</param>
+    /// <param name="filesInternalInfosRepository">Files internal information repository</param>
+    /// <param name="storageOptions">Storage options</param>
     public FilesService(IFilesRepository filesRepository,
         IFilesInternalInfosRepository filesInternalInfosRepository,
         IOptionsMonitor<StorageOptions> storageOptions)
@@ -24,6 +30,7 @@ public class FilesService : IFilesService
         _storageOptions = storageOptions;
     }
 
+    /// <inheritdoc />
     public async Task<(bool status, string? token)> UploadFile(UploadFileRequestModel model)
     {
         var savingResult = await _filesRepository.SaveFileBytes(model.FileName, model.FileBytes);
@@ -43,6 +50,7 @@ public class FilesService : IFilesService
             : (savingResult.Status, null);
     }
 
+    /// <inheritdoc />
     public async Task<DownloadFileResponseModel> DownloadFile(string token)
     {
         var fileInternalInfo = await _filesInternalInfosRepository.GetByToken(token);
