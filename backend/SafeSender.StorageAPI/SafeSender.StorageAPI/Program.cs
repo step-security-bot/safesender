@@ -24,7 +24,8 @@ builder.Services.AddHttpLogging(
     {
         logger.LoggingFields = HttpLoggingFields.Request
                                | HttpLoggingFields.ResponseStatusCode
-                               | HttpLoggingFields.ResponseHeaders;
+                               | HttpLoggingFields.ResponseHeaders
+                               | HttpLoggingFields.ResponseBody;
         
         logger.ResponseHeaders.Add("Location");
         logger.RequestHeaders.Add("Origin");
@@ -47,7 +48,7 @@ const string corsPolicyAcceptAllName = "AcceptAll";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyAcceptAllName,
-        builder => builder
+        policyBuilder => policyBuilder
             .SetIsOriginAllowed(host => true)
             .AllowAnyMethod()
             .AllowAnyHeader()
