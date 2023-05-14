@@ -1,22 +1,32 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# Use multi-stage builds
+# https://docs.docker.com/develop/develop-images/multistage-build/
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+# Base stage for SDK and runtime
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["SafeSender.StorageAPI/SafeSender.StorageAPI.csproj", "SafeSender.StorageAPI/"]
-RUN dotnet restore "SafeSender.StorageAPI/SafeSender.StorageAPI.csproj"
-COPY . .
-WORKDIR "/src/SafeSender.StorageAPI"
-RUN dotnet build "SafeSender.StorageAPI.csproj" -c Release -o /app/build
+# Copy csproj and restore as distinct layers
+# This allows Docker to cache the restored project files if no changes were made to the project files
+COPY SafeSender.StorageAPI/*.csproj ./
+RUN dotnet restore
 
-FROM build AS publish
-RUN dotnet publish "SafeSender.StorageAPI.csproj" -c Release -o /app/publish
+# Copy everything else and build
+COPY ./SafeSender.StorageAPI ./
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Use an unprivileged user for running the application
+RUN adduser --disabled-password --gecos '' dotnetuser && chown -R dotnetuser /app
+USER dotnetuser
+
+# Copy compiled binaries from build-env
+COPY --from=build-env /app/out .
+
+# Make sure the app listens on the correct port
+ENV ASPNETCORE_URLS=http://+:80
+
+# Start the app
 ENTRYPOINT ["dotnet", "SafeSender.StorageAPI.dll"]
