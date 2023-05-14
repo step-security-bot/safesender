@@ -8,22 +8,21 @@ services:
       - "27017:27017"
     volumes:
       - safe-sender-mongodb-data:/data/db
-    external_links:
-      - "mongo-data"
-  
+    restart: always
+
   safe-sender-storage-api:
     build:
       context: .
       dockerfile: SafeSender.StorageAPI/Dockerfile
     ports:
       - "5006:80"
-      - "5007:443"
-    external_links:
-      - "safe-sender-storage-api"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ASPNETCORE_URLS=http://+:80
     depends_on:
       - mongo-data
+    restart: always
 
 volumes:
   safe-sender-mongodb-data:
+  
