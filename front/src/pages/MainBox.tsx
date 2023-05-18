@@ -1,52 +1,57 @@
-import Image from 'next/image';
-import { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-import eyeClose from '../../public/eye-close.svg';
-import eyeOpen from '../../public/eye-open.svg';
-import shareIco from '../../public/shareIco.svg';
-
-import { SimpleToggle } from '../components/shared/simpleToggle/SimpleToggle';
-import { useTheme } from '../core/context/ThemeContext';
-import { FileSelector } from '../components/shared/fileSelector/FileSelector';
-import { PasswordInput } from '../components/shared/passwordInput/PasswordInput';
+import { LinkReady } from '../components/shared/linkReady/LinkReady';
+import { FileLoader } from '../components/fileLoader/FileLoader';
+import { DownloadFile } from '../components/fileDownloader/DownloadFile';
 
 
-export const MainBox = (): React.ReactElement => {
+export default function MainBox(): React.ReactElement {
 
-    
+    const [ hasFile, setHasFile ] = useState<boolean>( false );
+    const [ link, setLink ] = useState<string>( '' );
+    const [ token, setToken ] = useState<string>( '' );
+
+    const router = useRouter();
+
+    const { query } = router;
+
+    useEffect( () => {
+        if ( 'token' in query && query.token ) {
+
+            setToken( query.token as string );
+        }
+    }, [ query ] );
+
+
+    const getCurrentView = (): React.ReactElement => {
+
+        if ( link ) {
+            return <LinkReady extLink={link} />;
+        } else if ( !link && !token ) {
+            return <FileLoader hasFile={setHasFile} setLink={setLink} />;
+        } else if ( !link && token ) {
+            return <DownloadFile token={token} />
+        }
+
+        return <></>
+    }
+
     return (
-        <div className='w-[563px]'>
+        <div className='w-[580px]'>
 
-            <div className="pt-[8px] h-[72px] leading-[36px] mb-[24px] text-center m-auto font-semibold text-white text-[24px]">
-                Download the file in any format, encrypt it, and share it with anyone
-            </div>
+            {
+                !token && <div className="pt-[8px] h-[72px] leading-[36px] mb-[24px] text-center m-auto font-semibold text-white text-[24px]">
+                    Download the file in any format, encrypt it, and share it with anyone
+                </div>
+            }
 
-            <div className='dark:bg-[#838383] flex h-[768px] bg-[#9FBEF9] rounded-[16px] mb-[30px]'>
-                
-                <div className='m-auto bg-white h-[97%] w-[97%] rounded-[16px] pl-[24px] pr-[24px] box-border'>
+            <div className={` ${ hasFile && 'h-auto' }`}>
 
-                    <div className='flex flex-col items-center'>
+                <div className='m-auto border-[10px] border-[#9FBEF9] dark:border-[#838383]
+                 bg-white rounded-[16px] p-[24px] box-border'>
 
-                        <div className='flex flex-col items-center pt-[24px] pb-[24px] box-border'>
-                            <span className='text-[32px] font-bold'>Upload Your File</span>
-                            <span className='text-[18px] text-gray'>to encrypt the data </span>
-                        </div>
-
-                        <FileSelector />
-
-                    </div>
-
-                    <div className='relative'>
-
-                       <PasswordInput hasGenerateToggle={true}/>
-
-                        <label className='dark:bg-black bg-blue text-white border-[3px] rounded-[8px] h-[64px] flex items-center justify-center cursor-pointer text-[18px] font-bold dark:text-white'>
-                            <div className='flex items-center '><Image className='mr-[8.5px]' src={shareIco} alt='share' /> Share</div>
-                            <input type="file" className='hidden' />
-                        </label>
-
-
-                    </div>
+                    {getCurrentView()}
 
                 </div>
             </div>
