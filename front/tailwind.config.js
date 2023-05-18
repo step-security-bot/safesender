@@ -11,6 +11,7 @@ module.exports = {
             blueAcc: "#3F7CF3",
             purple: "#7e5bef",
             pink: "#ff49db",
+            error: "#FF614B",
             orange: "#ff7849",
             green: "#13ce66",
             yellow: "#ffc82c",

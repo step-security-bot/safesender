@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 
 
 export interface ContextProps {
@@ -19,9 +19,10 @@ export const ThemeProvider = ( { children }: { children: any } ): React.ReactEle
 
 
     const toggleTheme = ( toggle: boolean ) => {
-        console.log( toggle );
+
         setDarkMode( toggle );
-        if (toggle) {
+
+        if ( toggle ) {
 
             document.documentElement.classList.add( 'dark' );
         } else {

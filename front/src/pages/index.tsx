@@ -1,20 +1,23 @@
-import Head from 'next/head'
-import { Poppins } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-import { Header } from '../components/shared/header/Header';
-import { ThemeProvider, useTheme } from '../core/context/ThemeContext';
-import waves from '../../public/Group (1).svg';
+import Head from 'next/head';
 import Image from 'next/image';
-import { MainBox } from './MainBox';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Poppins } from 'next/font/google';
+
+import waves from '../../public/waves.svg';
+
+import MainBox from './MainBox';
 import { Footer } from '../components/shared/footer/Footer';
+import { Header } from '../components/shared/header/Header';
+
+import { ThemeProvider, useTheme } from '../core/context/ThemeContext';
+
 
 const poppinsFont = Poppins( { weight: [ '400', '500', '600' ], subsets: [ 'latin' ] } );
 
 export default function Home() {
 
-  const theme = useTheme();
-
-  console.log( theme.darkMode );
+  const theme = useTheme();  
 
   return (
     <>
