@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
+    output: 'standalone',
     eslint: {
         ignoreDuringBuilds: true,
     },
@@ -9,6 +10,15 @@ const nextConfig = {
             asyncWebAssembly: true,
             layers: true,
         };
+
+        if (isServer) {
+            config.output.webassemblyModuleFilename =
+              './../static/wasm/[modulehash].wasm';
+          } else {
+            config.output.webassemblyModuleFilename =
+              'static/wasm/[modulehash].wasm';
+          }
+        
         return config;
     },
 };

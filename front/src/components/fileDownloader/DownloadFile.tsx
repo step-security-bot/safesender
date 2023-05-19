@@ -67,7 +67,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
                 console.log( token );
 
-                const response = await fetch( 'https://safesender.app/api/download/' + token, {
+                const response = await fetch( 'https://api.safesender.app/api/download/' + token, {
                     method: 'GET',
                 } );
 

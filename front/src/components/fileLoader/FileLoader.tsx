@@ -120,7 +120,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
             const fileName: string = `${ ciphered }.${ fileExt }`;
 
-            const res = await fetch( 'https://safesender.app/api/upload', {
+            const res = await fetch( 'https://api.safesender.app/api/upload', {
                 body: JSON.stringify( {
                     FileBytes: btoa( JSON.stringify( Object.values( encryptedFile ) ) ),
                     PasswordHash: getHashPassword( password! ),
@@ -133,7 +133,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
             const apiResponse = await res.json();
 
             if ( 'token' in apiResponse && apiResponse.token ) {
-                setLink( `http://localhost:3000?token=${ apiResponse.token }` );
+                setLink( `https://safesender.app?token=${ apiResponse.token }` );
             }
         }
 

@@ -13,7 +13,7 @@ export default async function handler(
 ) {
 
     try {
-        const apiResponse = await fetch( `https://safesender.app/api/download/${ JSON.parse( req.body ).token}`);
+        const apiResponse = await fetch( `https://api.safesender.app/api/download/${ JSON.parse( req.body ).token}`);
 
         // console.log( 'apiResponse: ', );
 
