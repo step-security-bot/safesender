@@ -23,6 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.sln
     - name: Build
-      run: cd backend/SafeSender.StorageAPI && dotnet build --no-restore
+      run: cd ./backend/SafeSender.StorageAPI && dotnet build --no-restore
     - name: Test
-      run: cd backend/SafeSender.StorageAPI && dotnet test --no-build --verbosity normal
+      run: cd ./backend/SafeSender.StorageAPI && dotnet test --no-build --verbosity normal
