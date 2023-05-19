@@ -25,6 +25,7 @@ jobs:
     - name: Build Project
       run: dotnet build --no-restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI/SafeSender.StorageAPI.csproj
     - name: Build Tests
-      run: dotnet build --no-restore .backend/SafeSender.StorageAPI/SafeSender.StorageAPI.Tests/SafeSender.StorageAPI.Tests.csproj
+      run: dotnet build --no-restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.Tests/SafeSender.StorageAPI.Tests.csproj
     - name: Run Test
-      run: cd ./backend/SafeSender.StorageAPI && dotnet test --no-build --verbosity normal
+      working-directory: ./backend/SafeSender.StorageAPI
+      run: dotnet test --no-build --verbosity normal
