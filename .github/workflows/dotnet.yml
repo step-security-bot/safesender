@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: cd backend/SafeSender.StorageAPI && dotnet restore
+      run: dotnet restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.sln
     - name: Build
       run: cd backend/SafeSender.StorageAPI && dotnet build --no-restore
     - name: Test
