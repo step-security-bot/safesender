@@ -1,4 +1,4 @@
-name: Build
+name: Build Frontend
 on:
   push:
     branches: [ "main", "dev"]
@@ -12,5 +12,5 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - run: cd ./frontend && npm install
-    - run: cd ./frontend && npm run build
+    - run: cd ./front && npm install
+    - run: cd ./front && npm run build
