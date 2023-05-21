@@ -10,7 +10,9 @@ import { getHashPassword } from '../../core/helpers/getHashPassword';
 import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 
 import shareIco from '../../../public/shareIco.svg';
+import loaderIco from '../../../public/loader.png';
 import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
+import Image from 'next/image';
 
 
 
@@ -23,6 +25,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     const [ files, setFiles ] = useState<File[] | null>();
     const [ password, setPassword ] = useState<string | undefined>( undefined );
+    const [ isFileReading, setIsFileReading ] = useState<boolean>( false );
 
     const onDrop = useCallback( ( acceptedFiles: File[] ) => {
         setFiles( acceptedFiles );
@@ -42,6 +45,8 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         const reader = new FileReader();
 
         reader.onloadend = async ( e: any ) => {
+
+            setIsFileReading(false);
 
             const encoder = new TextEncoder();
             const encryptKey = encoder.encode( password );
@@ -90,6 +95,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
                 if ( 'token' in apiResponse && apiResponse.token ) {
                     // https://safesender.app
+                    // http://localhost:300/
                     setLink( `https://safesender.app?token=${ apiResponse.token }` );
                 }
 
@@ -100,6 +106,10 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         }
 
+        reader.onloadstart = () => {
+            setIsFileReading(true);
+        }
+
         reader.readAsArrayBuffer( files![ 0 ] );
     }
 
@@ -107,7 +117,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         <>
             <div className='flex flex-col items-center'>
 
-                {/* <Image className='animate-spin' src={loaderIco} alt='loader'/> */}
+                {isFileReading && <Image className='animate-spin' src={loaderIco} alt={'loader'} /> } 
 
                 <div className='flex flex-col items-center pb-[24px] box-border'>
                     <span className='text-[32px] font-bold'>Upload Your File</span>
