@@ -23,32 +23,38 @@ export const FileItem = ( { isBlured, isDeletable, file, deleteFile }: FileItemP
     const theme = useTheme();
 
     const fileSize = (): string => {
-        
-        if (!file) {
+
+        if ( !file ) {
             return '';
         }
 
-        const fs = `${ file?.size / (1024 * 1024)}`;
+        const fs = `${ file?.size / ( 1024 * 1024 ) }`;
 
         const sizeParts = fs.split( '.' );
-        
+
         if ( sizeParts.length > 1 && sizeParts[ 1 ].length > 3 ) {
-            return Number(fs).toFixed(5);
+            return Number( fs ).toFixed( 5 );
         } else {
             return Number( fs ).toFixed( 2 );
         }
-        
+
     };
 
     return (
         <div className={`p-[18px] w-[95%] rounded-[8px] bg-[#F3F3F3] flex items-center justify-between box-border ${ isBlured && 'blur-md' }`}>
 
             <div className="file flex">
-                <Image src={theme.darkMode ? fileIcoBlack : fileIcoBlue} className='mr-[10px]' alt='file icon'/>
+
+                <Image
+                    src={theme.darkMode ? fileIcoBlack : fileIcoBlue}
+                    className='mr-[10px] w-auto h-auto'
+                    alt='file icon' />
+
                 <div className='flex flex-col h-[40px] justify-between'>
                     <div className='font-bold text-[14px] dark:text-black text-blue'>{file?.name}</div>
                     <div className='text-[14px] text-gray'>{fileSize()} MB</div>
                 </div>
+
             </div>
 
             {isDeletable && <Image src={closeIco} alt='close' onClick={deleteFile} className='cursor-pointer' />}
