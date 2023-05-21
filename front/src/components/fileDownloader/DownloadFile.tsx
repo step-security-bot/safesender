@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-
+import pako from 'pako';
 import { decrypt_async } from 'wasm-xchacha20-poly';
 
 import loaderIco from '../../../public/loader.png';
@@ -10,6 +10,8 @@ import { Button } from '../shared/button/Button';
 import { caesar } from '../../core/helpers/caesar';
 import { FileItem } from '../shared/fileItem/FIleItem';
 import { PasswordInput } from '../shared/passwordInput/PasswordInput';
+import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
+
 
 
 export interface DownloadFileProps {
@@ -69,16 +71,8 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
         const decryptedFile = await decrypt_async( JSON.parse( encryptedFile ), encryptKey );
 
-        const uri = decoder.decode( decryptedFile );
-
-        const link = document.createElement( 'a' );
-        link.href = uri;
-        link.setAttribute( 'download', fileName );
-        document.body.appendChild( link );
-        link.click();
-        link.remove();
-        URL.revokeObjectURL( uri );
-    }
+        saveByteArrayAsFile(pako.inflate(decryptedFile), fileName);
+}
 
     return (
         <div className='flex flex-col items-center'>

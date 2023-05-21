@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import Script from "next/script"
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Poppins } from 'next/font/google';
@@ -17,7 +18,7 @@ const poppinsFont = Poppins( { weight: [ '400', '500', '600' ], subsets: [ 'lati
 
 export default function Home() {
 
-  const theme = useTheme();  
+  const theme = useTheme();
 
   return (
     <>

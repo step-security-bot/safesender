@@ -1,14 +1,17 @@
+import pako from 'pako';
 import React, { useCallback, useState } from 'react';
 
-import { encrypt_async } from 'wasm-xchacha20-poly';
+import { decrypt_async, encrypt_async } from 'wasm-xchacha20-poly';
 
 import { Button } from '../shared/button/Button';
 import { caesar } from '../../core/helpers/caesar';
 import { FileSelector } from '../shared/fileSelector/FileSelector';
-import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 import { getHashPassword } from '../../core/helpers/getHashPassword';
+import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 
 import shareIco from '../../../public/shareIco.svg';
+import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
+
 
 
 export interface FileLoaderProps {
@@ -33,18 +36,31 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         hasFile( false );
     }
 
+
     const shareClickHandler = async (): Promise<void> => {
 
         const reader = new FileReader();
 
-        reader.onloadend = async () => {
+        reader.onloadend = async ( e: any ) => {
 
             const encoder = new TextEncoder();
             const encryptKey = encoder.encode( password );
 
-            const file = encoder.encode( reader.result?.toString() );
+            // console.log('INIIAL: ', e.target.result);
 
-            const encryptedFile = await encrypt_async( file, encryptKey );
+            const zipped = pako.deflate( e.target.result );
+
+            // console.log('DEFLATED: ', zipped);
+
+            const encryptedFile = await encrypt_async( zipped, encryptKey );
+
+            // const decryptedFile = await decrypt_async( encryptedFile, encryptKey );
+
+            // const unzipped = pako.inflate( decryptedFile );
+
+            // console.log('INFLATED: ',  unzipped );
+
+            // saveByteArrayAsFile( unzipped, files![ 0 ].name );
 
             const nameParts = files![ 0 ].name.split( '.' );
             const fileExt = nameParts.pop();
@@ -68,22 +84,23 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
                 const apiResponse = await res.json();
 
-                if (!apiResponse) {
-                    throw new Error('EMPTY API RESPONSE!');
+                if ( !apiResponse ) {
+                    throw new Error( 'EMPTY API RESPONSE!' );
                 }
 
                 if ( 'token' in apiResponse && apiResponse.token ) {
+                    // https://safesender.app
                     setLink( `https://safesender.app?token=${ apiResponse.token }` );
                 }
 
             } catch ( err ) {
-                console.error('UPLOAD_REQUEST_ERROR: ', err);
+                console.error( 'UPLOAD_REQUEST_ERROR: ', err );
             }
 
 
         }
 
-        reader.readAsDataURL( files![ 0 ] );
+        reader.readAsArrayBuffer( files![ 0 ] );
     }
 
     return (
