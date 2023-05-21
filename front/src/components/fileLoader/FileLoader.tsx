@@ -16,6 +16,7 @@ import Image from 'next/image';
 
 
 
+
 export interface FileLoaderProps {
     hasFile: ( state: boolean ) => void;
     setLink: ( link: string ) => void;
@@ -46,7 +47,9 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         reader.onloadend = async ( e: any ) => {
 
-            setIsFileReading(false);
+
+            setIsFileReading( false );
+
 
             const encoder = new TextEncoder();
             const encryptKey = encoder.encode( password );
@@ -96,6 +99,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
                 if ( 'token' in apiResponse && apiResponse.token ) {
                     // https://safesender.app
                     // http://localhost:300/
+
                     setLink( `https://safesender.app?token=${ apiResponse.token }` );
                 }
 
@@ -107,7 +111,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         }
 
         reader.onloadstart = () => {
-            setIsFileReading(true);
+            setIsFileReading( true );
         }
 
         reader.readAsArrayBuffer( files![ 0 ] );
@@ -117,7 +121,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         <>
             <div className='flex flex-col items-center'>
 
-                {isFileReading && <Image className='animate-spin' src={loaderIco} alt={'loader'} /> } 
+                {isFileReading && <Image className='animate-spin' src={loaderIco} alt={'loader'} />}
 
                 <div className='flex flex-col items-center pb-[24px] box-border'>
                     <span className='text-[32px] font-bold'>Upload Your File</span>

@@ -1,0 +1,30 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Backend Build and Test
+
+on:
+  push:
+    branches: [ "main", "dev"]
+  pull_request:
+    branches: [ "main", "dev"]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.sln
+    - name: Build Project
+      run: dotnet build --no-restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI/SafeSender.StorageAPI.csproj
+    - name: Build Tests
+      run: dotnet build --no-restore ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.Tests/SafeSender.StorageAPI.Tests.csproj
+    - name: Run Test
+      run: dotnet test --no-build --verbosity normal ./backend/SafeSender.StorageAPI/SafeSender.StorageAPI.sln
