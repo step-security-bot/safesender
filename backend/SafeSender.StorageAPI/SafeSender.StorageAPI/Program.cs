@@ -153,5 +153,3 @@ Type GetFileStorageRepositoryType(IConfigurationSection configurationSection)
                 "Storage type is not specified in settings"),
         };
 }
-
-int MegaBytesToBytes(int megaBytes) => megaBytes * 1024 * 1024;
