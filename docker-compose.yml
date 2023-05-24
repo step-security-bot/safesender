@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  mongo-data:
+    container_name: mongo-data
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - safe-sender-mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    networks:
+      - safesender
+
+  safe-sender-storage-api:
+    container_name: safe-sender-storage-api
+    build:
+      context: ./backend/SafeSender.StorageAPI/
+      dockerfile: ./SafeSender.StorageAPI/Dockerfile
+    ports:
+      - "5006:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - mongo-data
+    restart: always
+    networks:
+      - safesender
+
+  safesender-front:
+    container_name: safesender-front
+    image: safesender-front
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+      target: runner
+    command: npm run start
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - safesender
+
+volumes:
+  safe-sender-mongodb-data:
+
+networks:
+  safesender:
+    driver: bridge
