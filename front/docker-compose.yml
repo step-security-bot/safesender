@@ -4,7 +4,7 @@ services:
     build:
       context: ./
       target: runner
-    command: npm run dev
+    command: npm run prod
     ports:
       - "3000:3000"
     environment:
