@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using AnonFilesApi.Implementations;
 using AnonFilesApi.Interfaces;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using SafeSender.StorageAPI.Database;
+using SafeSender.StorageAPI.Extensions;
 using SafeSender.StorageAPI.Interfaces;
 using SafeSender.StorageAPI.Middlewares;
 using SafeSender.StorageAPI.Models;
@@ -116,7 +118,14 @@ app.MapPost("api/upload", async (
     {
         if (!model.FileBytes.Any())
         {
-            return Results.BadRequest();
+            return Results.BadRequest("File is empty");
+        }
+        
+        // Add file size limit <= 100mb
+        if (model.FileBytes.GetLengthInMegabytes() > 100)
+        {
+            return Results.BadRequest(
+                $"File size limit is 100mb. Size of provided file is {model.FileBytes.GetLengthInMegabytes().ToString(CultureInfo.InvariantCulture)}mb");
         }
         
         var result = await filesService.UploadFile(model);
