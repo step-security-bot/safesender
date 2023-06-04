@@ -13,6 +13,8 @@ import shareIco from '../../../public/shareIco.svg';
 import loaderIco from '../../../public/loader.png';
 import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
 import Image from 'next/image';
+import { Loader } from '../shared/loader/Loader';
+import { useLoader } from '../../core/context/LoaderContext';
 
 
 
@@ -27,6 +29,8 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
     const [ files, setFiles ] = useState<File[] | null>();
     const [ password, setPassword ] = useState<string | undefined>( undefined );
     const [ isFileReading, setIsFileReading ] = useState<boolean>( false );
+
+    const loader = useLoader();
 
     const onDrop = useCallback( ( acceptedFiles: File[] ) => {
         setFiles( acceptedFiles );
@@ -49,6 +53,8 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
 
             setIsFileReading( false );
+
+            loader.setIsLoading(false);
 
 
             const encoder = new TextEncoder();
@@ -112,6 +118,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         reader.onloadstart = () => {
             setIsFileReading( true );
+            loader.setIsLoading(true);
         }
 
         reader.readAsArrayBuffer( files![ 0 ] );
@@ -120,8 +127,10 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
     return (
         <>
             <div className='flex flex-col items-center'>
+                {/* isFileReading &&  */}
+                {/* {<Loader />} */}
 
-                {isFileReading && <Image className='animate-spin' src={loaderIco} alt={'loader'} />}
+                {true && <Loader />}
 
                 <div className='flex flex-col items-center pb-[24px] box-border'>
                     <span className='text-[32px] font-bold'>Upload Your File</span>

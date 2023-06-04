@@ -12,13 +12,15 @@ import { Footer } from '../components/shared/footer/Footer';
 import { Header } from '../components/shared/header/Header';
 
 import { ThemeProvider, useTheme } from '../core/context/ThemeContext';
+import { LoaderProvider, useLoader } from '../core/context/LoaderContext';
+import { Loader } from '../components/shared/loader/Loader';
 
 
 const poppinsFont = Poppins( { weight: [ '400', '500', '600' ], subsets: [ 'latin' ] } );
 
 export default function Home() {
 
-  const theme = useTheme();
+  const loader = useLoader();
 
   return (
     <>
@@ -31,28 +33,32 @@ export default function Home() {
 
       <ThemeProvider>
 
-        <div className='min-h-[1024px] h-[96.5vh]'>
+        <LoaderProvider>
 
-          <Header />
+          <div className='min-h-[1024px] h-[96.5vh]'>
 
-          <main className='bg-blue relative dark:bg-black overflow-hidden'>
+            <Header />
 
-            <Image
-              className='w-full absolute top-[-65px] left-0 right-0 bottom-0'
-              src={waves}
-              alt='bg' />
+            <main className='bg-blue relative dark:bg-black overflow-hidden'>
 
-            <div className='h-[922px] flex items-center justify-center relative'>
+              <Image
+                className='w-full absolute top-[-65px] left-0 right-0 bottom-0'
+                src={waves}
+                alt='bg' />
 
-              <MainBox />
+              <div className='h-[922px] flex items-center justify-center relative'>
 
-            </div>
+                <MainBox />
 
-          </main>
+              </div>
 
-          <Footer />
+            </main>
 
-        </div>
+            <Footer />
+
+          </div>
+
+        </LoaderProvider>
 
       </ThemeProvider>
     </>
