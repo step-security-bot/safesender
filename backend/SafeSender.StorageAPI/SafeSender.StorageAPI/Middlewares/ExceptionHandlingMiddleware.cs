@@ -10,6 +10,11 @@ public class ExceptionHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
+    /// <summary>
+    /// Exception handling middleware
+    /// </summary>
+    /// <param name="logger">Logger</param>
+    /// <param name="next">Request delegate</param>
     public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger, RequestDelegate next)
     {
         _logger = logger;

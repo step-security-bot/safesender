@@ -1,17 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SafeSender.StorageAPI.Models;
+namespace SafeSender.StorageAPI.Models.ApiModels;
 
 /// <summary>
-/// Upload file request model
+/// Upload request file data request model
 /// </summary>
 public sealed class UploadFileRequestModel
 {
     /// <summary>
-    /// File represented by byte array
+    /// External storage file token
     /// </summary>
     [Required]
-    public byte[] FileBytes { get; set; } = default!;
+    public string ExternalStorageToken { get; set; } = default!;
     
     /// <summary>
     /// File name with extension (if extension provided)
