@@ -30,8 +30,11 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         const loadFile = async () => {
 
             if ( token ) {
-
+              
                 try {
+
+                const response = await fetch( 'https://api.safesender.app/api/download/' + token );
+
 
                     const response = await fetch( 'https://api.safesender.app/api/download/' + token );
 
@@ -56,7 +59,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         } );
 
     }, [] );
-
+  
     
     const getFileFromExternalStorage = async ( internalApiResponse: { externalStorageToken: string, fileName: string } ) => {
 
@@ -109,7 +112,6 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
         saveByteArrayAsFile( pako.inflate( decryptedFile ), fileName );
     }
-
 
     return (
         <div className='flex flex-col items-center'>
