@@ -108,7 +108,7 @@ app.MapGet("api/download/{token}", async (
         
         return Results.Ok(downloadFileModel);
     })
-    .WithName("GetFile")
+    .WithName("GetFileInfo")
     .Produces<DownloadFileResponseModel>()
     .Produces(StatusCodes.Status400BadRequest);
 
@@ -116,28 +116,12 @@ app.MapPost("api/upload", async (
         [FromBody] UploadFileRequestModel model,
         [FromServices] IFilesService filesService) =>
     {
-        if (!model.FileBytes.Any())
-        {
-            return Results.BadRequest("File is empty");
-        }
-        
-        // Add file size limit <= 100mb
-        if (model.FileBytes.GetLengthInMegabytes() > 100)
-        {
-            return Results.BadRequest(
-                $"File size limit is 100mb. Size of provided file is {model.FileBytes.GetLengthInMegabytes().ToString(CultureInfo.InvariantCulture)}mb");
-        }
-        
-        var result = await filesService.UploadFile(model);
+        var internalToken = await filesService.UploadFile(model);
 
-        return result.status
-            ? Results.Ok(new UploadFileResponseModel { Token = result.token! })
-            : Results.StatusCode(StatusCodes.Status500InternalServerError);
+        return Results.Ok(new UploadFileResponseModel { Token = internalToken });
     })
-    .WithName("SaveFile")
-    .Produces(StatusCodes.Status201Created)
-    .Produces(StatusCodes.Status400BadRequest)
-    .Produces(StatusCodes.Status500InternalServerError);
+    .WithName("SaveFileInfo")
+    .Produces(StatusCodes.Status200OK);
 
 app.Run();
 

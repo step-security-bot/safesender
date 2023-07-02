@@ -1,16 +1,18 @@
-using SafeSender.StorageAPI.Models;
 using SafeSender.StorageAPI.Models.ApiModels;
 
 namespace SafeSender.StorageAPI.Interfaces;
 
+/// <summary>
+/// Files service
+/// </summary>
 public interface IFilesService
 {
     /// <summary>
     /// Upload file
     /// </summary>
     /// <param name="model">Upload file request model<see cref="UploadFileRequestModel"/></param>
-    /// <returns>Saving status and internal token</returns>
-    Task<(bool status, string? token)> UploadFile(UploadFileRequestModel model);
+    /// <returns>Internal token</returns>
+    Task<string> UploadFile(UploadFileRequestModel model);
     
     /// <summary>
     /// Download file 

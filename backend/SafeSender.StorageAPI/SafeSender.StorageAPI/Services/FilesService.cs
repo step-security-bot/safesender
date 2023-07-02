@@ -11,43 +11,42 @@ namespace SafeSender.StorageAPI.Services;
 /// </summary>
 public class FilesService : IFilesService
 {
-    private readonly IFilesRepository _filesRepository;
     private readonly IFilesInternalInfosRepository _filesInternalInfosRepository;
     private readonly IOptionsMonitor<StorageOptions> _storageOptions;
+    private readonly ILogger<FilesService> _logger;
 
     /// <summary>
     /// Constructor for <see cref="FilesService"/>
     /// </summary>
-    /// <param name="filesRepository">Files repository</param>
     /// <param name="filesInternalInfosRepository">Files internal information repository</param>
     /// <param name="storageOptions">Storage options</param>
-    public FilesService(IFilesRepository filesRepository,
-        IFilesInternalInfosRepository filesInternalInfosRepository,
-        IOptionsMonitor<StorageOptions> storageOptions)
+    /// <param name="logger">Logger</param>
+    public FilesService(IFilesInternalInfosRepository filesInternalInfosRepository,
+        IOptionsMonitor<StorageOptions> storageOptions, 
+        ILogger<FilesService> logger)
     {
-        _filesRepository = filesRepository;
         _filesInternalInfosRepository = filesInternalInfosRepository;
         _storageOptions = storageOptions;
+        _logger = logger;
     }
 
     /// <inheritdoc />
-    public async Task<(bool status, string? token)> UploadFile(UploadFileRequestModel model)
+    public async Task<string> UploadFile(UploadFileRequestModel model)
     {
-        var savingResult = await _filesRepository.SaveFileBytes(model.FileName, model.FileBytes);
-
         var fileInternalInfo = new FileInternalInfo
         {
             FileName = model.FileName,
-            StorageFileIdentifier = savingResult.ExternalToken ?? model.FileName,
+            StorageFileIdentifier = model.ExternalStorageToken,
             PasswordHash = model.PasswordHash,
             StorageType = _storageOptions.CurrentValue.Type,
         };
-       
-        await _filesInternalInfosRepository.Add(fileInternalInfo);
         
-        return savingResult.Status
-            ? (savingResult.Status, fileInternalInfo.Token)
-            : (savingResult.Status, null);
+        await _filesInternalInfosRepository.Add(fileInternalInfo);
+
+        _logger.LogInformation("UploadFile - File info added. External token: {ExternalToken}, Internal token: {InternalToken}", 
+            fileInternalInfo.StorageFileIdentifier, fileInternalInfo.Token);
+        
+        return fileInternalInfo.Token;
     }
 
     /// <inheritdoc />
@@ -61,16 +60,9 @@ public class FilesService : IFilesService
                 $"DownloadFile - Information about file by specified token not found. Token: {token}");
         }
 
-        var fileBytes = await _filesRepository.GetFileBytes(fileInternalInfo.StorageFileIdentifier);
-
-        if (!fileBytes.Any())
-        {
-            throw new FileNotFoundException("File not found by specified token");
-        }
-
         return new()
         {
-            FileBytes = fileBytes,
+            ExternalStorageToken = fileInternalInfo.StorageFileIdentifier,
             FileName = fileInternalInfo.FileName,
             PasswordHash = fileInternalInfo.PasswordHash,
         };

@@ -8,7 +8,7 @@ public class DownloadFileResponseModel
     /// <summary>
     /// Internal token
     /// </summary>
-    public byte[] FileBytes { get; set; } = default!;
+    public string ExternalStorageToken { get; set; } = default!;
 
     /// <summary>
     /// File name with extension
