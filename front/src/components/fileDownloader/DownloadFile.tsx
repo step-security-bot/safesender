@@ -31,29 +31,23 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
             if ( token ) {
 
-                const response = await fetch( 'https://api.safesender.app/api/download/' + token );
+                try {
 
-                const apiResponse = await response.json();
+                    const response = await fetch( 'https://api.safesender.app/api/download/' + token );
 
-                console.log( 'DOWLOAD_API_RESPOSE: ', apiResponse );
+                    const apiResponse = await response.json();
 
-                if ( !apiResponse ) {
-                    throw new Error( 'DOWLOAD_API_RESPOSE IS EMPTY!' );
+                    console.log( 'DOWLOAD_API_RESPOSE: ', apiResponse );
+
+                    if ( !apiResponse ) {
+                        throw new Error( 'DOWLOAD_API_RESPOSE IS EMPTY!' );
+                    }
+
+                    getFileFromExternalStorage( apiResponse );
+
+                } catch ( e ) {
+                    console.log( 'unknown download error!' );
                 }
-
-                getFileFromExternalStorage( apiResponse );
-
-                // const fileNamePart = apiResponse.fileName
-                //     ? ( apiResponse.fileName.split( '.' )[ 0 ] || '' )
-                //     : '';
-
-                // const fileExtPart = apiResponse.fileName
-                //     ? ( apiResponse.fileName.split( '.' )?.pop() || '' )
-                //     : '';
-
-                // setFile( new File( [], `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` ) );
-                // setEncryptedFile( atob( apiResponse.fileBytes ) );
-                // setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
             }
         }
 
@@ -63,61 +57,51 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
     }, [] );
 
-    const getFileFromExternalStorage = async ( internalApiResponse: any ) => {
+    
+    const getFileFromExternalStorage = async ( internalApiResponse: { externalStorageToken: string, fileName: string } ) => {
 
         const externalResponse = await fetch( internalApiResponse.externalStorageToken );
+        const downloadPage = await externalResponse.text();
 
-        const textResponse = await externalResponse.text();
+        const downloadURL = getDownloadURLFromPage( downloadPage );
 
-        // console.log( '[Download External Response]: ', textResponse );
+        const fileBlob = await fetch( downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 ) );
 
-        const aTagDirectURL: string = textResponse.substring( textResponse.lastIndexOf( 'download-url' ), textResponse.lastIndexOf( 'download-url' ) + 300 );
+        const rawFile = await fileBlob.blob();
 
-        const link = aTagDirectURL.substring( aTagDirectURL.indexOf( 'href="' ), aTagDirectURL.indexOf( '"', aTagDirectURL.indexOf( 'href="' ) + 7 ) );
-
-        // console.log( link )
-
-
-        const r = await fetch( link.substring( link.lastIndexOf( '"' ) + 1 ) );
-        // const r = await fetch( `./api/file-download?url=${ link.substring( link.lastIndexOf( '"' ) + 1 ) }` );
-
-        const t = await r.blob();
-        console.log( 'R:', t );
+        const fileNameArray = internalApiResponse.fileName.split( '.' );
 
         const fileNamePart = internalApiResponse.fileName
-            ? ( internalApiResponse.fileName.split( '.' )[ 0 ] || '' )
+            ? ( fileNameArray[ 0 ] || '' )
             : '';
 
         const fileExtPart = internalApiResponse.fileName
-            ? ( internalApiResponse.fileName.split( '.' )?.pop() || '' )
+            ? ( fileNameArray?.pop() || '' )
             : '';
 
+        // set state parts
         setFile( new File( [], `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` ) );
-        setEncryptedFile( new Uint8Array( await t.arrayBuffer() ) );
+
+        setEncryptedFile( new Uint8Array( await rawFile.arrayBuffer() ) );
+
         setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
-
-
-        // const uri = window.URL.createObjectURL( t );
-
-        // const l = document.createElement( 'a' );
-
-        // l.href = uri;
-
-        // l.setAttribute( 'download', fileName );
-        // document.body.appendChild( l );
-
-        // l.click();
-        // l.remove();
-
-        // URL.revokeObjectURL( uri );
-
-
     }
 
-    const clickHandler = async () => {
+
+    const getDownloadURLFromPage = (page: string): string => {
+
+        const downloadButtonStartPosition = page.lastIndexOf( 'download-url' );
+
+        const aTagDirectURL: string = page.substring( downloadButtonStartPosition, downloadButtonStartPosition + 300 );
+
+        const hrefStartPosition = aTagDirectURL.indexOf( 'href="' );
+
+        return aTagDirectURL.substring( hrefStartPosition, aTagDirectURL.indexOf( '"', hrefStartPosition + 7 ) );
+    }
+
+    const clickHandler = async (): Promise<void> => {
 
         const encoder = new TextEncoder();
-        const decoder = new TextDecoder();
 
         const encryptKey = encoder.encode( password );
 
@@ -125,6 +109,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
         saveByteArrayAsFile( pako.inflate( decryptedFile ), fileName );
     }
+
 
     return (
         <div className='flex flex-col items-center'>
