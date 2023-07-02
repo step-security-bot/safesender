@@ -2,9 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface Data {
-    file: number[];
-    passwordHash: string;
-    filename: string;
+    url: string;
 }
 
 export default async function handler(
@@ -13,16 +11,19 @@ export default async function handler(
 ) {
 
     try {
-        const apiResponse = await fetch( `https://api.safesender.app/api/download/${ JSON.parse( req.body ).token}`);
 
-        // console.log( 'apiResponse: ', );
+        console.log();
 
-        const test = await apiResponse.json();
+        const u = req.query.url as string;
 
-        console.log(test);
-        
-        return res.status(200).json(test);
-    } catch(err) {
+        const apiResponse = await fetch( u );
+
+        console.log( 'apiResponse: ', apiResponse);
+
+        const test = await apiResponse.blob();
+
+        return res.status( 200 ).send( test.arrayBuffer.toString() );
+    } catch ( err ) {
         console.log( err );
     }
 

@@ -6,6 +6,8 @@ import { useTheme } from '../../../core/context/ThemeContext';
 import closeIco from '../../../../public/closeIco.svg';
 import fileIcoBlack from '../../../../public/fileIcoBlack.svg';
 import fileIcoBlue from '../../../../public/fileIcoBlue.svg';
+import { StatusBar } from '../statusBar/StatusBar';
+import { useFileReader } from '../../../core/context/FileReadContext';
 
 
 const MB = 1000_000_000;
@@ -21,6 +23,7 @@ export interface FileItemProps {
 export const FileItem = ( { isBlured, isDeletable, file, deleteFile }: FileItemProps ): React.ReactElement => {
 
     const theme = useTheme();
+    const { progress } = useFileReader();
 
     const fileSize = (): string => {
 
@@ -41,23 +44,32 @@ export const FileItem = ( { isBlured, isDeletable, file, deleteFile }: FileItemP
     };
 
     return (
-        <div className={`p-[18px] w-[95%] rounded-[8px] bg-[#F3F3F3] flex items-center justify-between box-border ${ isBlured && 'blur-md' }`}>
+        <div className={`p-[18px] w-[95%] rounded-[8px] bg-[#F3F3F3] flex items-center justify-between  flex-col box-border ${ isBlured && 'blur-md' }`}>
 
-            <div className="file flex">
+            <div className='w-full flex justify-between'>
 
-                <Image
-                    src={theme.darkMode ? fileIcoBlack : fileIcoBlue}
-                    className='mr-[10px] w-auto h-auto'
-                    alt='file icon' />
+                <div className="file flex">
 
-                <div className='flex flex-col h-[40px] justify-between'>
-                    <div className='font-bold text-[14px] dark:text-black text-blue'>{file?.name}</div>
-                    <div className='text-[14px] text-gray'>{fileSize()} MB</div>
+                    <Image
+                        src={theme.darkMode ? fileIcoBlack : fileIcoBlue}
+                        className='mr-[10px] w-auto h-auto'
+                        alt='file icon' />
+
+                    <div className='flex flex-col h-[40px] justify-between'>
+                        <div className='font-bold text-[14px] dark:text-black text-blue'>{file?.name}</div>
+                        <div className='text-[14px] text-gray'>{fileSize()} MB</div>
+                    </div>
+
                 </div>
+
+                {isDeletable && <Image src={closeIco} alt='close' onClick={deleteFile} className='cursor-pointer' />}
 
             </div>
 
-            {isDeletable && <Image src={closeIco} alt='close' onClick={deleteFile} className='cursor-pointer' />}
+            <div className='pt-[10px] w-full flex justify-center'>
+                { !!progress && <StatusBar />}
+            </div>
+
         </div>
     )
 }

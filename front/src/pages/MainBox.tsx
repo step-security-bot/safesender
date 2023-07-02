@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { LinkReady } from '../components/shared/linkReady/LinkReady';
 import { FileLoader } from '../components/fileLoader/FileLoader';
 import { DownloadFile } from '../components/fileDownloader/DownloadFile';
+import { FileReaderProvider } from '../core/context/FileReadContext';
 
 
 export default function MainBox(): React.ReactElement {
@@ -29,7 +30,7 @@ export default function MainBox(): React.ReactElement {
         if ( link ) {
             return <LinkReady extLink={link} />;
         } else if ( !link && !token ) {
-            return <FileLoader hasFile={setHasFile} setLink={setLink} />;
+            return <FileReaderProvider><FileLoader hasFile={setHasFile} setLink={setLink} /></FileReaderProvider>;
         } else if ( !link && token ) {
             return <DownloadFile token={token} />
         }

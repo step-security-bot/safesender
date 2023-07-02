@@ -24,7 +24,18 @@ module.exports = {
         fontFamily: {
             sans: ["Poppins", "sans-serif"],
         },
-        extend: {},
+        extend: {
+            keyframes: {
+                loading: {
+                    "0%": { left: "-100%" },
+                    "50%": { left: "100%" },
+                    "100%": { left: "-100%" },
+                },
+            },
+            animation: {
+                loading: "loading 3s linear infinite",
+            },
+        },
         screens: {
             laptop: { raw: "(min-height: 700px)" },
             desktop: { raw: "(min-height: 1024px)" },
