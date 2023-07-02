@@ -30,13 +30,11 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         const loadFile = async () => {
 
             if ( token ) {
-              
+
                 try {
 
-                const response = await fetch( 'https://api.safesender.app/api/download/' + token );
-
-
                     const response = await fetch( 'https://api.safesender.app/api/download/' + token );
+
 
                     const apiResponse = await response.json();
 
@@ -59,8 +57,8 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         } );
 
     }, [] );
-  
-    
+
+
     const getFileFromExternalStorage = async ( internalApiResponse: { externalStorageToken: string, fileName: string } ) => {
 
         const externalResponse = await fetch( internalApiResponse.externalStorageToken );
@@ -91,7 +89,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     }
 
 
-    const getDownloadURLFromPage = (page: string): string => {
+    const getDownloadURLFromPage = ( page: string ): string => {
 
         const downloadButtonStartPosition = page.lastIndexOf( 'download-url' );
 
