@@ -166,8 +166,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         if ( 'token' in internalApiResult && internalApiResult.token ) {
             // https://safesender.app
             // http://localhost:300/
-
-            setLink( `http://localhost:300/?token=${ internalApiResult.token }` );
+            setLink( `https://safesender.app?token=${ internalApiResult.token }` );
         }
     }
 
