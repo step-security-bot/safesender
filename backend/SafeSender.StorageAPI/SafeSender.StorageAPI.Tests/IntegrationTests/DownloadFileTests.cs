@@ -1,8 +1,6 @@
-using System.Text;
 using Flurl.Http;
 using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
-using SafeSender.StorageAPI.Models;
 using SafeSender.StorageAPI.Models.ApiModels;
 
 namespace SafeSender.StorageAPI.Tests.IntegrationTests;
@@ -15,12 +13,12 @@ public class DownloadFileTests
     {
         // Arrange
         var client = SystemUnderTest.GetClient();
-        var uploadedFileMock = Encoding.UTF8.GetBytes("mock test string 123");
+        var externalStorageToken = "TestToken";
         
         // Act
         using var response = await client.Request(ApiConstants.UploadEndpointUrl).PostJsonAsync(new UploadFileRequestModel
         {
-            FileBytes = uploadedFileMock,
+            ExternalStorageToken = externalStorageToken,
             FileName = "text.txt",
             PasswordHash = Guid.NewGuid().ToString("N"),
         });
@@ -31,7 +29,7 @@ public class DownloadFileTests
         var downloadFileModel = await downloadResponse.GetJsonAsync<DownloadFileResponseModel>();
 
         // Assert
-        Assert.AreEqual(uploadedFileMock, downloadFileModel.FileBytes);
+        Assert.AreEqual(externalStorageToken, downloadFileModel.ExternalStorageToken);
         Assert.AreEqual(downloadResponse.StatusCode, StatusCodes.Status200OK);
     }
 }
