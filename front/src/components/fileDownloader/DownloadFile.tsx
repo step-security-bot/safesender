@@ -64,9 +64,12 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         const externalResponse = await fetch( internalApiResponse.externalStorageToken );
         const downloadPage = await externalResponse.text();
 
-        const downloadURL = getDownloadURLFromPage( downloadPage );
+        var downloadURL = getDownloadURLFromPage( downloadPage );
+        downloadURL = downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 );
+        // add cors proxy
+        downloadURL =  'https://corsproxy.io?'+ downloadURL;
 
-        const fileBlob = await fetch( downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 ) );
+        const fileBlob = await fetch(downloadURL);
 
         const rawFile = await fileBlob.blob();
 
