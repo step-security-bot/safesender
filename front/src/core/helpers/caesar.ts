@@ -68,6 +68,7 @@ function caesarDecipher( str: string, shift: number ) {
 
 
 export const caesar = {
+    STEP: 5,
     cipher: caesarCipher,
     decipher: caesarDecipher,
 }

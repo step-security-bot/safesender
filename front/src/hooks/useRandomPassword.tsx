@@ -17,7 +17,6 @@ export function useRandomPassword( length: number ): string {
 
     do {
         generatePassword();
-        console.log( 'generatePassword' );
     } while ( !passwordRegex.test( password ) );
 
     return password;

@@ -44,6 +44,7 @@ export default function Home() {
               <Image
                 className='w-full absolute top-[-65px] left-0 right-0 bottom-0'
                 src={waves}
+                priority={true}
                 alt='bg' />
 
               <div className='h-[922px] flex items-center justify-center relative'>
