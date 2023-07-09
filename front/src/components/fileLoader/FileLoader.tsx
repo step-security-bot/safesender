@@ -102,7 +102,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         formData.append( 'file', new Blob( [ encryptedFile ] ) );
 
-        const response = await fetch( 'https://api.anonfiles.com/upload', {
+        const response = await fetch( 'https://corsproxy.io/?https://api.filechan.org/upload', {
             method: 'POST',
             body: formData
         } );
@@ -113,8 +113,11 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         if ( result && result.data.file.url.full ) {
 
+            const fullUrl = result.data.file.url.full;
+            // Add proxy via https://corsproxy.io
+            const proxyUrl = `https://corsproxy.io/?${ fullUrl }`;
 
-            sendFileInfo( result.data.file.url.full );
+            sendFileInfo( proxyUrl );
 
             // const r = await fetch( result.data.file.url.full, {
             //     method: 'GET'
