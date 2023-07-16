@@ -39,7 +39,8 @@ module.exports = {
         screens: {
             laptop: { raw: "(min-height: 700px)" },
             desktop: { raw: "(min-height: 1024px)" },
-            sm: "640px",
+            // sm: "640px",
+            sm: { raw: "(max-width: 640px)" },
             // => @media (min-width: 640px) { ... }
 
             md: "768px",

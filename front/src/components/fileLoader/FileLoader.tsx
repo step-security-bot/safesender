@@ -32,8 +32,14 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
     const fileReader = useFileReader();
 
     const onDrop = useCallback( ( acceptedFiles: File[] ) => {
-        setFiles( acceptedFiles );
-        hasFile( true );
+
+        if ( acceptedFiles[ 0 ].size > (50 * 1048576) ) {
+            alert('YOUR FILE IS SO HUGE! Try another one!');
+        } else {
+            setFiles( acceptedFiles );
+            hasFile( true );
+        }
+       
     }, [] );
 
     const deleteFileClicked = ( e: Event ): void => {
@@ -118,7 +124,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     }
 
-    const getInternalMetadata = (): Pick<InternalApiUploadRequest, 'PasswordHash' | 'FileName'> | undefined => {
+    const getInternalMetadata = (): Pick<InternalApiUploadRequest, 'PasswordHash' | 'FileName' | 'FileSize'> | undefined => {
 
         if ( !files || !files[ 0 ] ) {
             throw new Error( 'There were not any files for getting metadata!' );
@@ -135,6 +141,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         return {
             PasswordHash: getHashPassword( password! ),
             FileName: fileName,
+            FileSize: file.size,
         }
     }
 

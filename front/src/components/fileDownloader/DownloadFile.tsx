@@ -25,6 +25,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     const [ file, setFile ] = useState<File | undefined>();
     const [ encryptedFile, setEncryptedFile ] = useState<any>();
     const [ fileName, setFileName ] = useState<string>( '' );
+    const [ fileSize, setFileSize ] = useState<number>();
 
     useEffect( () => {
 
@@ -59,7 +60,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     }, [] );
 
 
-    const getFileFromExternalStorage = async ( internalApiResponse: { externalStorageToken: string, fileName: string } ) => {
+    const getFileFromExternalStorage = async ( internalApiResponse: InternalApiDownloadResponse ) => {
 
         const externalResponse = await fetch( internalApiResponse.externalStorageToken );
         const downloadPage = await externalResponse.text();
@@ -67,13 +68,11 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         let downloadURL = getDownloadURLFromPage( downloadPage );
         downloadURL = downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 );
         // add cors proxy
-        downloadURL =  'https://corsproxy.io?'+ downloadURL;
+        downloadURL = 'https://corsproxy.io?' + downloadURL;
 
-        const fileBlob = await fetch(downloadURL);
+        const fileBlob = await fetch( downloadURL );
 
         const rawFile = await fileBlob.blob();
-
-        console.log(rawFile)
 
         const fileNameArray = internalApiResponse.fileName.split( '.' );
 
@@ -91,6 +90,8 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         setEncryptedFile( new Uint8Array( await rawFile.arrayBuffer() ) );
 
         setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
+
+        setFileSize(internalApiResponse.fileSize);
     }
 
 
@@ -136,6 +137,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
                     file
                         ? <FileItem
                             file={file!}
+                            fileSize={fileSize!}
                             isBlured={false}
                             isDeletable={false}
                             deleteFile={false} />

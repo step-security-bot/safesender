@@ -42,7 +42,7 @@ export default function Home() {
             <main className='bg-blue relative dark:bg-black overflow-hidden'>
 
               <Image
-                className='w-full absolute top-[-65px] left-0 right-0 bottom-0'
+                className='sm:hidden w-full absolute top-[-65px] left-0 right-0 bottom-0'
                 src={waves}
                 priority={true}
                 alt='bg' />
