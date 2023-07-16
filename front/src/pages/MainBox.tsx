@@ -30,7 +30,9 @@ export default function MainBox(): React.ReactElement {
         if ( link ) {
             return <LinkReady extLink={link} />;
         } else if ( !link && !token ) {
-            return <FileReaderProvider><FileLoader hasFile={setHasFile} setLink={setLink} /></FileReaderProvider>;
+            return <FileReaderProvider>
+                <FileLoader hasFile={setHasFile} setLink={setLink} />
+            </FileReaderProvider>;
         } else if ( !link && token ) {
             return <DownloadFile token={token} />
         }
@@ -39,17 +41,17 @@ export default function MainBox(): React.ReactElement {
     }
 
     return (
-        <div className='w-[580px]'>
+        <div className='w-[580px] sm:w-[90%]'>
 
             {
-                !token && <div className="pt-[8px] h-[72px] leading-[36px] mb-[24px] text-center m-auto font-semibold text-white text-[24px]">
+                !token && <div className="pt-[8px] h-[72px] sm:h-[auto] leading-[36px] mb-[24px] text-center m-auto font-semibold text-white text-[24px]">
                     Download the file in any format, encrypt it, and share it with anyone
                 </div>
             }
 
             <div className={` ${ hasFile && 'h-auto' }`}>
 
-                <div className='m-auto border-[10px] border-[#9FBEF9] dark:border-[#838383]
+                <div className='sm:border-[0px] m-auto border-[10px] border-[#9FBEF9] dark:border-[#838383]
                  bg-white rounded-[16px] p-[24px] box-border'>
 
                     {getCurrentView()}

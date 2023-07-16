@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import pako from 'pako';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 import { decrypt_async } from 'wasm-xchacha20-poly';
 
 import loaderIco from '../../../public/loader.png';
@@ -9,8 +9,9 @@ import downLoadIcon from '../../../public/download.svg';
 import { Button } from '../shared/button/Button';
 import { caesar } from '../../core/helpers/caesar';
 import { FileItem } from '../shared/fileItem/FIleItem';
-import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
+import { PasswordInput } from '../shared/passwordInput/PasswordInput';
+import { InternalApiDownloadResponse } from '../../models/internal-api';
 
 
 
@@ -24,6 +25,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     const [ file, setFile ] = useState<File | undefined>();
     const [ encryptedFile, setEncryptedFile ] = useState<any>();
     const [ fileName, setFileName ] = useState<string>( '' );
+    const [ fileSize, setFileSize ] = useState<number>();
 
     useEffect( () => {
 
@@ -35,8 +37,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
                     const response = await fetch( 'https://api.safesender.app/api/download/' + token );
 
-
-                    const apiResponse = await response.json();
+                    const apiResponse: InternalApiDownloadResponse = await response.json();
 
                     console.log( 'DOWLOAD_API_RESPOSE: ', apiResponse );
 
@@ -59,17 +60,17 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     }, [] );
 
 
-    const getFileFromExternalStorage = async ( internalApiResponse: { externalStorageToken: string, fileName: string } ) => {
+    const getFileFromExternalStorage = async ( internalApiResponse: InternalApiDownloadResponse ) => {
 
         const externalResponse = await fetch( internalApiResponse.externalStorageToken );
         const downloadPage = await externalResponse.text();
 
-        var downloadURL = getDownloadURLFromPage( downloadPage );
+        let downloadURL = getDownloadURLFromPage( downloadPage );
         downloadURL = downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 );
         // add cors proxy
-        downloadURL =  'https://corsproxy.io?'+ downloadURL;
+        downloadURL = 'https://corsproxy.io?' + downloadURL;
 
-        const fileBlob = await fetch(downloadURL);
+        const fileBlob = await fetch( downloadURL );
 
         const rawFile = await fileBlob.blob();
 
@@ -89,6 +90,8 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
         setEncryptedFile( new Uint8Array( await rawFile.arrayBuffer() ) );
 
         setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
+
+        setFileSize(internalApiResponse.fileSize);
     }
 
 
@@ -134,6 +137,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
                     file
                         ? <FileItem
                             file={file!}
+                            fileSize={fileSize!}
                             isBlured={false}
                             isDeletable={false}
                             deleteFile={false} />

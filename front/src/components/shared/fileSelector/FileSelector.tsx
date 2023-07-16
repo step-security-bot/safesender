@@ -25,7 +25,7 @@ export const FileSelector = ( { onDrop, file, deleteFile }: FileSelectorProps ):
 
     return (
         <form {...getRootProps( { className: "dropzone" } )}
-            className={`b w-[508px] ${ file ? 'h-[112px]' : 'h-[320px]' } ${ !file ? 'pt-[33px]' : 'justify-center' } flex flex-col items-center box-border `}>
+            className={`b sm:w-[100%] w-[508px] ${ file ? 'h-[112px]' : 'h-[320px]' } ${ !file ? 'pt-[33px]' : 'justify-center' } flex flex-col items-center box-border `}>
 
             {!file
                 ? <>
@@ -55,7 +55,7 @@ export const FileSelector = ( { onDrop, file, deleteFile }: FileSelectorProps ):
                         50 MB max file size
                     </div>
                 </>
-                : <FileItem file={file!} isBlured={false} isDeletable={true} deleteFile={deleteFile}/>
+                : <FileItem fileSize={file?.size} file={file!} isBlured={false} isDeletable={true} deleteFile={deleteFile}/>
             }
 
         </form>
