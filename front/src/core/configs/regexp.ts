@@ -1,1 +1,1 @@
-export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?^+=_&])[A-Za-z\d@$!%*?^_+=&]{32,}$/;
+export const passwordRegex = /^(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,32}$/
