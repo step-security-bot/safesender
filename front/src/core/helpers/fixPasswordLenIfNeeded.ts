@@ -1,7 +1,9 @@
-export function fixPasswordLenIfNeeded(password: string | null | undefined, minPasswordLen: number): string {
+export function fixPasswordLenIfNeeded(password: string | null | undefined, desiredPasswordLen: number): string {
     if (password == null) {
         throw new Error("Password cannot be null or undefined");
     }
 
-    return password.length < minPasswordLen ? password.padEnd(minPasswordLen, '0') : password;
+    return password.length < desiredPasswordLen
+        ? password.padEnd(desiredPasswordLen, '0')
+        : password.substring(0, desiredPasswordLen);
 }
