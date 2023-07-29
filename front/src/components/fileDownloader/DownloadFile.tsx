@@ -91,7 +91,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
         setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
 
-        setFileSize(internalApiResponse.fileSize);
+        setFileSize( internalApiResponse.originalFileSize );
     }
 
 

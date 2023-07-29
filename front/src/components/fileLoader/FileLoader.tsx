@@ -124,7 +124,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     }
 
-    const getInternalMetadata = (): Pick<InternalApiUploadRequest, 'PasswordHash' | 'FileName' | 'FileSize'> | undefined => {
+    const getInternalMetadata = (): Pick<InternalApiUploadRequest, 'PasswordHash' | 'FileName' | 'OriginalFileSize'> | undefined => {
 
         if ( !files || !files[ 0 ] ) {
             throw new Error( 'There were not any files for getting metadata!' );
@@ -141,7 +141,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         return {
             PasswordHash: getHashPassword( password! ),
             FileName: fileName,
-            FileSize: file.size,
+            OriginalFileSize: file.size,
         }
     }
 
