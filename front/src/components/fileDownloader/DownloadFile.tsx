@@ -12,6 +12,7 @@ import { FileItem } from '../shared/fileItem/FIleItem';
 import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
 import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 import { InternalApiDownloadResponse } from '../../models/internal-api';
+import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
 
 
 
@@ -109,8 +110,9 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     const clickHandler = async (): Promise<void> => {
 
         const encoder = new TextEncoder();
-
-        const encryptKey = encoder.encode( password );
+        const correctPasswordLen: number = 32;
+        const finalPassword = fixPasswordLenIfNeeded( password, correctPasswordLen );
+        const encryptKey = encoder.encode( finalPassword );
 
         const decryptedFile = await decrypt_async( encryptedFile, encryptKey );
 

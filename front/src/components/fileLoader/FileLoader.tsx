@@ -14,6 +14,7 @@ import { useLoader } from '../../core/context/LoaderContext';
 import { useFileReader } from '../../core/context/FileReadContext';
 import { ExternalUploadApiResponse } from '../../models/external-api';
 import { InternalApiUploadRequest, InternalApiUploadResponse } from '../../models/internal-api';
+import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
 
 
 export interface FileLoaderProps {
@@ -187,7 +188,10 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
                 fileReader.setIsReadingFinished( true );
 
                 const encoder = new TextEncoder();
-                const encryptKey = encoder.encode( password );
+
+                const correctPasswordLen: number = 32;
+                const finalPassword = fixPasswordLenIfNeeded( password, correctPasswordLen );
+                const encryptKey = encoder.encode( finalPassword );
 
                 // console.log('INIIAL: ', e.target.result);
 
