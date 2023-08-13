@@ -83,7 +83,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
         <div>
 
             {
-                hasGenerateToggle && <div className="relative left-[-10px] w-[225px] 
+                hasGenerateToggle && <div className="relative left-[-6px] w-[225px] 
                     flex items-center justify-between toggle-box pt-[10px] pb-[8px] box-border">
 
                     <label className='flex items-center w-full gap-2'>
@@ -99,26 +99,36 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                 <label className='text-[16px] font-bold flex flex-col relative'>
                     <span className={`pb-[5px] ${ passwordError && 'text-error' }`}>Password</span>
 
-                    <input
-                        ref={inpRef}
-                        value={inpValue}
-                        type="password"
-                        placeholder='Enter password'
-                        onChange={inputChangesHandler}
-                        className={`border-[1px] 
+                    <div className='relative w-full flex'>
+                        <input
+                            ref={inpRef}
+                            value={inpValue}
+                            type="password"
+                            placeholder='Enter password'
+                            onChange={inputChangesHandler}
+                            className={`border-[1px] 
                                     text-[18px]
+                                    w-full
                                     font-normal
                                     rounded-[8px]
                                     border-gray 
                                     p-[20px] 
+                                    pr-[65px]
                                     box-border1
+                                    active:outline-[#6599FF]
+                                    focus:outline-[#6599FF]
+                                    dark:focus:outline-[black]
+                                    dark:active:outline-[black]
                                     ${ passwordError && 'border-error focus:outline-error' }`} />
 
-                    <Image
-                        className='absolute right-[6%] top-[55%] opacity-50 cursor-pointer'
-                        src={isHidePass ? eyeClose : eyeOpen}
-                        onClick={eyeClicked}
-                        alt='eye' />
+                        <div className='absolute right-[6%] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                            <Image
+
+                                src={isHidePass ? eyeClose : eyeOpen}
+                                onClick={eyeClicked}
+                                alt='eye' />
+                        </div>
+                    </div>
 
                 </label>
 

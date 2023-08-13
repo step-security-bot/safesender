@@ -15,6 +15,7 @@ import { useFileReader } from '../../core/context/FileReadContext';
 import { ExternalUploadApiResponse } from '../../models/external-api';
 import { InternalApiUploadRequest, InternalApiUploadResponse } from '../../models/internal-api';
 import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
+import { useDataContext } from '../../core/context/DataContext';
 
 
 export interface FileLoaderProps {
@@ -28,19 +29,23 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
     const [ password, setPassword ] = useState<string | undefined>( undefined );
     const [ isFileReading, setIsFileReading ] = useState<boolean>( false );
 
+    const dataContext = useDataContext();
     const loader = useLoader();
 
     const fileReader = useFileReader();
 
     const onDrop = useCallback( ( acceptedFiles: File[] ) => {
 
-        if ( acceptedFiles[ 0 ].size > (50 * 1048576) ) {
-            alert('YOUR FILE IS SO HUGE! Try another one!');
+        console.log( 'onDrop' );
+
+        if ( acceptedFiles[ 0 ].size > ( 50 * 1048576 ) ) {
+            alert( 'YOUR FILE IS SO HUGE! Try another one!' );
         } else {
+
             setFiles( acceptedFiles );
-            hasFile( true );
+            dataContext.setHasFile( true );
         }
-       
+
     }, [] );
 
     const deleteFileClicked = ( e: Event ): void => {
@@ -98,8 +103,10 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
         const formData = new FormData();
 
-        formData.append( 'file', new Blob( [ encryptedFile ] ) );
+        console.log( encryptedFile )
 
+        formData.append( 'file', new Blob( [ encryptedFile ] ) );
+        // https://corsproxy.io/?
         const response = await fetch( 'https://corsproxy.io/?https://api.filechan.org/upload', {
             method: 'POST',
             body: formData
@@ -137,7 +144,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         const fileExt: string | undefined = nameParts?.pop();
         const ciphered: string = caesar.cipher( caesar.STEP, nameParts.join( '.' ) );
 
-        const fileName: `${string}.${string}` = `${ ciphered }.${ fileExt || '' }`;
+        const fileName: `${ string }.${ string }` = `${ ciphered }.${ fileExt || '' }`;
 
         return {
             PasswordHash: getHashPassword( password! ),

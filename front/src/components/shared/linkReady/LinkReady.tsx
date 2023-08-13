@@ -5,7 +5,7 @@ import { Button } from '../button/Button';
 import copyIco from './../../../../public/copyIco.svg';
 
 
-export const LinkReady = ( { extLink }: { extLink: string }): React.ReactElement => {
+export const LinkReadyBox = ( { extLink }: { extLink: string }): React.ReactElement => {
 
     const [ link, setLink ] = useState<string | undefined>( extLink );
 
@@ -22,7 +22,7 @@ export const LinkReady = ( { extLink }: { extLink: string }): React.ReactElement
             </div>
 
             <div className='border w-full
-            h-auto break-words text-center border-gray rounded-[8px] p-[25px] box-border text-gray'>
+            h-auto break-words text-center border-gray text-[18px] font-[500] rounded-[8px] p-[25px] box-border text-gray'>
                 {link}
             </div>
 
