@@ -2,6 +2,9 @@ using SafeSender.StorageAPI.Models;
 
 namespace SafeSender.StorageAPI.Interfaces;
 
+/// <summary>
+/// Files storage repository
+/// </summary>
 public interface IFilesRepository
 {
     /// <summary>

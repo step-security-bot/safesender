@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using AnonFilesApi.Implementations;
 using AnonFilesApi.Interfaces;
+using MessagePack;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using SafeSender.StorageAPI.Database;
@@ -105,22 +106,24 @@ app.MapGet("api/download/{token}", async (
         }
         
         var downloadFileModel = await filesService.DownloadFile(token);
-        
-        return Results.Ok(downloadFileModel);
+
+        return Results.Bytes(MessagePackSerializer.Serialize(downloadFileModel), "application/octet-stream");
     })
-    .WithName("GetFileInfo")
+    .WithName("GetFile")
     .Produces<DownloadFileResponseModel>()
     .Produces(StatusCodes.Status400BadRequest);
 
 app.MapPost("api/upload", async (
-        [FromBody] UploadFileRequestModel model,
+        HttpRequest request,
         [FromServices] IFilesService filesService) =>
     {
+        var model = await MessagePackSerializer.DeserializeAsync<UploadFileRequestModel>(request.Body);
+        
         var internalToken = await filesService.UploadFile(model);
 
         return Results.Ok(new UploadFileResponseModel { Token = internalToken });
     })
-    .WithName("SaveFileInfo")
+    .WithName("SaveFile")
     .Produces(StatusCodes.Status200OK);
 
 app.Run();

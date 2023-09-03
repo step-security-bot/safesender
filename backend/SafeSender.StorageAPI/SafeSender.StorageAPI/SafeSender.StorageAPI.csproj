@@ -10,9 +10,18 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AnonFilesApi" Version="1.2.2" />
     <PackageReference Include="Base62-Net" Version="1.2.157201" />
+    <PackageReference Include="MessagePack" Version="2.5.124" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.19.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
