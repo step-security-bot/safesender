@@ -11,6 +11,4 @@ Overall, SafeSender is a powerful and user-friendly file-sharing platform that p
 
 # UI Concept 
 
-https://www.figma.com/file/VU5zOhAY2JeWu3FVEGwQ2a/SafeSender?node-id=1-12&t=pXWGtR4j65w9R2c4-4
-
-
+Check out our amazing UI concept [here](https://www.figma.com/file/VU5zOhAY2JeWu3FVEGwQ2a/SafeSender?node-id=1-12&t=pXWGtR4j65w9R2c4-4)
