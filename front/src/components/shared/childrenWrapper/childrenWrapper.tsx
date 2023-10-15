@@ -54,12 +54,15 @@ export default function ChildrenWrapper({children}: PropsWithChildren): React.Re
 
             <div className={` ${ dataContext.hasFile && 'h-auto' }`}>
 
-                <div className='sm:border-[0px] m-auto border-[10px] border-[#9FBEF9] dark:border-[#838383]
-                 bg-white rounded-[16px] p-[24px] box-border'>
+                <div className='sm:border-[0px] m-auto p-[10px] border-[#9FBEF9] dark:border-[#838383]
+                 dark:bg-[#838383] bg-[#9FBEF9] rounded-[16px] box-border flex items-center justify-center'>
+                    <div className='bg-white rounded-[16px] p-[24px] box-border'>
 
-                    {children}
+                        {children}
 
+                    </div>
                 </div>
+
             </div>
 
         </div>

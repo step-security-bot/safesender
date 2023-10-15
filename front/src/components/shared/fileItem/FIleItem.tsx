@@ -63,12 +63,18 @@ export const FileItem = ( { isBlured, isDeletable, file, fileSize, deleteFile }:
 
                 </div>
 
-                {isDeletable && <Image src={closeIco} alt='close' onClick={deleteFile} className='cursor-pointer' />}
+                {
+                    isDeletable
+                    && <Image src={closeIco}
+                        alt='close'
+                        onClick={deleteFile}
+                        className='cursor-pointer' />
+                }
 
             </div>
 
             <div className='pt-[10px] w-full flex justify-center'>
-                { !!progress && <StatusBar />}
+                {!!progress && <StatusBar />}
             </div>
 
         </div>

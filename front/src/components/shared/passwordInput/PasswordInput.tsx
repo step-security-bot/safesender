@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 
 import eyeClose from '../../../../public/eye-close.svg';
 import eyeOpen from '../../../../public/eye-open.svg';
+import copyIco from '../../../../public/copy.svg';
 
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
 
@@ -65,6 +66,14 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
         setIsHidePass( !isHidePass );
     };
 
+    const copyClicked = (): void => {
+        if (navigator && navigator.clipboard) {
+            navigator.clipboard.writeText(inpRef.current.value);
+        } else {
+            console.error('DISABLED CLIPBOARD API!');
+        }
+    }
+
     const inputChangesHandler = ( { target }: any ): void => {
 
         setInpValue( target.value );
@@ -100,6 +109,14 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                     <span className={`pb-[5px] ${ passwordError && 'text-error' }`}>Password</span>
 
                     <div className='relative w-full flex'>
+
+                        <div className='absolute left-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                            <Image
+                                src={copyIco}
+                                onClick={copyClicked}
+                                alt='eye' />
+                        </div>
+
                         <input
                             ref={inpRef}
                             value={inpValue}
@@ -113,7 +130,8 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                                     rounded-[8px]
                                     border-gray 
                                     p-[20px] 
-                                    pr-[65px]
+                                    pl-[55px]
+                                    pr-[55px]
                                     box-border1
                                     active:outline-[#6599FF]
                                     focus:outline-[#6599FF]
@@ -121,7 +139,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                                     dark:active:outline-[black]
                                     ${ passwordError && 'border-error focus:outline-error' }`} />
 
-                        <div className='absolute right-[6%] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                        <div className='absolute right-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
                             <Image
 
                                 src={isHidePass ? eyeClose : eyeOpen}

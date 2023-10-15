@@ -140,7 +140,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
                         ? <FileItem
                             file={file!}
                             fileSize={fileSize!}
-                            isBlured={false}
+                            isBlured={!!password}
                             isDeletable={false}
                             deleteFile={false} />
                         : <Image
