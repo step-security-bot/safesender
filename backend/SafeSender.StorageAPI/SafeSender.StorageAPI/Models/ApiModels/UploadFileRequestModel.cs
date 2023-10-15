@@ -1,17 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using MessagePack;
 
 namespace SafeSender.StorageAPI.Models.ApiModels;
 
 /// <summary>
 /// Upload request file data request model
 /// </summary>
+[MessagePackObject(keyAsPropertyName: true)]
 public sealed class UploadFileRequestModel
 {
     /// <summary>
-    /// External storage file token
+    /// File data byte array
     /// </summary>
     [Required]
-    public string ExternalStorageToken { get; set; } = default!;
+    public byte[] FileData { get; set; } = Array.Empty<byte>();
     
     /// <summary>
     /// File name with extension (if extension provided)
@@ -29,5 +31,5 @@ public sealed class UploadFileRequestModel
     /// File size before encryption
     /// </summary>
     [Required]
-    public long OriginalFileSize { get; set; } = default!;
+    public long OriginalFileSize { get; set; }
 }

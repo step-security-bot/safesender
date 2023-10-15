@@ -1,14 +1,17 @@
+using MessagePack;
+
 namespace SafeSender.StorageAPI.Models.ApiModels;
 
 /// <summary>
 /// Download file response model
 /// </summary>
+[MessagePackObject(keyAsPropertyName: true)]
 public class DownloadFileResponseModel
 {
     /// <summary>
-    /// Internal token
+    /// File data byte array
     /// </summary>
-    public string ExternalStorageToken { get; set; } = default!;
+    public byte[] FileData { get; set; } = Array.Empty<byte>();
 
     /// <summary>
     /// File name with extension

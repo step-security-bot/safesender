@@ -6,7 +6,7 @@ namespace SafeSender.StorageAPI.Database;
 
 public class TokenIdGenerator : IIdGenerator
 {
-    public object GenerateId(object container, object document)
+    public object GenerateId(object? container, object? document)
     {
         return new CombGuidGenerator()
             .NewCombGuid(Guid.NewGuid(), DateTime.Now.ToUniversalTime())

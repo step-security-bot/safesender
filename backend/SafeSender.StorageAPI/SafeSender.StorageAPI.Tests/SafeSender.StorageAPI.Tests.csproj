@@ -13,6 +13,7 @@
     <ItemGroup>
       <PackageReference Include="FluentAssertions" Version="6.11.0" />
       <PackageReference Include="Flurl.Http" Version="3.2.4" />
+      <PackageReference Include="MessagePack" Version="2.5.124" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.16" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
       <PackageReference Include="NUnit" Version="3.13.3" />
