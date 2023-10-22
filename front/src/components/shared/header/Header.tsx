@@ -15,7 +15,9 @@ export const Header = () => {
 
     const themeContext = useTheme();
 
-    const switchThemeHandler = () => {
+    const switchThemeHandler = ( e: Event ) => {
+        e.preventDefault();
+        e.stopPropagation();
         themeContext.setDarkMode( !themeContext.darkMode );
     }
 
@@ -34,7 +36,10 @@ export const Header = () => {
             </div>
 
             <div className='mr-[64px]'>
-                <ThemeToggle darkMode={themeContext.darkMode} clickHandler={switchThemeHandler} />
+                <ThemeToggle
+                    darkMode={themeContext.darkMode}
+                    clickHandler={switchThemeHandler}
+                />
             </div>
 
         </header>

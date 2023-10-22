@@ -1,7 +1,7 @@
-import pako from 'pako';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { decrypt_async } from 'wasm-xchacha20-poly';
+import { decode } from "@msgpack/msgpack";
 
 import loaderIco from '../../../public/loader.png';
 import downLoadIcon from '../../../public/download.svg';
@@ -11,13 +11,15 @@ import { caesar } from '../../core/helpers/caesar';
 import { FileItem } from '../shared/fileItem/FIleItem';
 import { saveByteArrayAsFile } from '../../core/helpers/saveFile';
 import { PasswordInput } from '../shared/passwordInput/PasswordInput';
-import { InternalApiDownloadResponse } from '../../models/internal-api';
+import { getHashPassword } from '../../core/helpers/getHashPassword';
 import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
-
+import { CORRECT_PASSWORD_LENGTH } from '../../core/configs/password-length';
+import { InternalApiDownloadResponse } from '../../models/internal-api';
+import { Downloaded } from './downloaded/Downloaded';
 
 
 export interface DownloadFileProps {
-    token: string;
+    readonly token: string;
 }
 
 export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement => {
@@ -27,6 +29,10 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     const [ encryptedFile, setEncryptedFile ] = useState<any>();
     const [ fileName, setFileName ] = useState<string>( '' );
     const [ fileSize, setFileSize ] = useState<number>();
+    const [ originalPasswordHash, setOriginalPasswordHash ] = useState<string>( '' );
+    const [ isCorrectPassword, setIsCorrectPassword ] = useState<boolean>( false );
+    const [ downloaded, setDownloaded ] = useState<boolean>( false );
+
 
     useEffect( () => {
 
@@ -38,15 +44,9 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
                     const response = await fetch( 'https://api.safesender.app/api/download/' + token );
 
-                    const apiResponse: InternalApiDownloadResponse = await response.json();
+                    const internalApiResponse = decode( await response.arrayBuffer() );
 
-                    console.log( 'DOWLOAD_API_RESPOSE: ', apiResponse );
-
-                    if ( !apiResponse ) {
-                        throw new Error( 'DOWLOAD_API_RESPOSE IS EMPTY!' );
-                    }
-
-                    getFileFromExternalStorage( apiResponse );
+                    convertFile( internalApiResponse );
 
                 } catch ( e ) {
                     console.log( 'unknown download error!' );
@@ -58,108 +58,117 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
             console.log( 'DOWNLOAD_FILE_ERROR:', err );
         } );
 
-    }, [] );
+    }, [ token ] );
 
 
-    const getFileFromExternalStorage = async ( internalApiResponse: InternalApiDownloadResponse ) => {
+    const convertFile = ( internalApiResponse: InternalApiDownloadResponse ) => {
 
-        const externalResponse = await fetch( internalApiResponse.externalStorageToken );
-        const downloadPage = await externalResponse.text();
+        const fileNameArray = internalApiResponse.FileName.split( '.' );
 
-        let downloadURL = getDownloadURLFromPage( downloadPage );
-        downloadURL = downloadURL.substring( downloadURL.lastIndexOf( '"' ) + 1 );
-        // add cors proxy
-        downloadURL = 'https://corsproxy.io?' + downloadURL;
-
-        const fileBlob = await fetch( downloadURL );
-
-        const rawFile = await fileBlob.blob();
-
-        const fileNameArray = internalApiResponse.fileName.split( '.' );
-
-        const fileNamePart = internalApiResponse.fileName
+        const fileNamePart = internalApiResponse.FileName
             ? ( fileNameArray[ 0 ] || '' )
             : '';
 
-        const fileExtPart = internalApiResponse.fileName
+        const fileExtPart = internalApiResponse.FileName
             ? ( fileNameArray?.pop() || '' )
             : '';
 
         // set state parts
         setFile( new File( [], `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` ) );
 
-        setEncryptedFile( new Uint8Array( await rawFile.arrayBuffer() ) );
+        setEncryptedFile( internalApiResponse.FileData );
 
         setFileName( `${ caesar.decipher( fileNamePart, 5 ) }.${ fileExtPart }` );
 
-        setFileSize( internalApiResponse.originalFileSize );
+        setFileSize( internalApiResponse.OriginalFileSize );
+
+        setOriginalPasswordHash( internalApiResponse.PasswordHash );
     }
 
-
-    const getDownloadURLFromPage = ( page: string ): string => {
-
-        const downloadButtonStartPosition = page.lastIndexOf( 'download-url' );
-
-        const aTagDirectURL: string = page.substring( downloadButtonStartPosition, downloadButtonStartPosition + 300 );
-
-        const hrefStartPosition = aTagDirectURL.indexOf( 'href="' );
-
-        return aTagDirectURL.substring( hrefStartPosition, aTagDirectURL.indexOf( '"', hrefStartPosition + 7 ) );
+    const passwordIsIncorrect = ( password: string ): boolean => {
+        return originalPasswordHash !== getHashPassword( password );
     }
 
     const clickHandler = async (): Promise<void> => {
 
         const encoder = new TextEncoder();
-        const correctPasswordLen: number = 32;
-        const finalPassword = fixPasswordLenIfNeeded( password, correctPasswordLen );
+        const finalPassword = fixPasswordLenIfNeeded( password, CORRECT_PASSWORD_LENGTH );
         const encryptKey = encoder.encode( finalPassword );
 
         const decryptedFile = await decrypt_async( encryptedFile, encryptKey );
 
-        saveByteArrayAsFile( pako.inflate( decryptedFile ), fileName );
+        saveByteArrayAsFile( decryptedFile, fileName );
+
+        setDownloaded( true );
+    }
+
+    const checkEnteredPassword = ( password: string ) => {
+        if ( !password ) {
+            return;
+        }
+
+        if ( passwordIsIncorrect( password ) ) {
+            alert( 'Password is incorrect! Please check your password and try again' );
+            setIsCorrectPassword( false );
+            return;
+        }
+
+        setPassword( password );
+        setIsCorrectPassword( true );
     }
 
     return (
-        <div className='flex flex-col items-center'>
 
-            <div className='flex flex-col items-center pb-[24px] box-border'>
-                <span className='text-[32px] font-bold'>Download</span>
-                <span className='text-[18px] text-gray'>Enter password to download files</span>
-            </div>
+        <>
+            {
+                downloaded
+                    ? <Downloaded />
+                    : <div className='flex flex-col items-center'>
 
-            <div className=''>
-                <PasswordInput
-                    hasGenerateToggle={false}
-                    password={password}
-                    setPassword={setPassword} />
-            </div>
+                        <div className='flex flex-col items-center pb-[24px] box-border'>
+                            <span className='text-[32px] font-bold'>Download</span>
+                            <span className='text-[18px] text-gray'>Enter password to download files</span>
+                        </div>
 
-            <div className='w-full'>
-                {
-                    file
-                        ? <FileItem
-                            file={file!}
-                            fileSize={fileSize!}
-                            isBlured={!!password}
-                            isDeletable={false}
-                            deleteFile={false} />
-                        : <Image
-                            className='animate-spin m-auto'
-                            src={loaderIco}
-                            alt='loader' />
-                }
-            </div>
+                        <div className=''>
+                            <PasswordInput
+                                hasGenerateToggle={false}
+                                password={password}
+                                setPassword={checkEnteredPassword} />
+                        </div>
 
-            <div className='pt-[24px] w-full box-border'>
+                        <div className='w-full'>
+                            {
+                                file
+                                    ? <FileItem
+                                        file={file!}
+                                        fileSize={fileSize!}
+                                        isBlured={!isCorrectPassword}
+                                        isDeletable={false}
+                                        deleteFile={false} />
+                                    : <Image
+                                        className='animate-spin m-auto'
+                                        src={loaderIco}
+                                        alt='loader' />
+                            }
+                        </div>
 
-                <Button
-                    disabled={!password}
-                    labelText='Download'
-                    onClickHandler={clickHandler}
-                    icon={downLoadIcon} />
+                        <div className='pt-[24px] w-full box-border'>
 
-            </div>
+                            <Button
+                                disabled={!password}
+                                labelText='Download'
+                                onClickHandler={clickHandler}
+                                icon={downLoadIcon} />
 
-        </div>
+                        </div>
+
+                    </div>
+            }
+
+        </>
+
+
+
     )
 }

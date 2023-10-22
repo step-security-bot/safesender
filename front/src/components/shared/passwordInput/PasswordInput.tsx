@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import eyeClose from '../../../../public/eye-close.svg';
 import eyeOpen from '../../../../public/eye-open.svg';
@@ -8,6 +8,7 @@ import copyIco from '../../../../public/copy.svg';
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
 
 import { passwordRegex } from '../../../core/configs/regexp';
+import { SmallInfoPanel } from '../smallInfoPanel/SmallInfoPanel';
 
 
 function getRandomPassword( length: number ): string {
@@ -44,8 +45,24 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
     const [ isHidePass, setIsHidePass ] = useState<boolean>( true );
     const [ passwordError, setPasswordError ] = useState<boolean>( false );
     const [ inpValue, setInpValue ] = useState<string>( '' );
+    const [ copied, setCopied ] = useState<boolean | undefined>( undefined );
 
     const inpRef = useRef<any>();
+
+    useEffect( () => {
+
+        if ( copied ) {
+            setTimeout( () => {
+                setCopied( false );
+            }, 3000 );
+
+        }
+
+        if ( !copied ) {
+            setCopied( undefined )
+        }
+
+    }, [ copied ] );
 
     const generatePassToggleClicked = ( isActive: boolean ): void => {
         setIsGeneratePassActive( isActive );
@@ -69,6 +86,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
     const copyClicked = (): void => {
         if (navigator && navigator.clipboard) {
             navigator.clipboard.writeText(inpRef.current.value);
+            setCopied(true);
         } else {
             console.error('DISABLED CLIPBOARD API!');
         }
@@ -109,6 +127,10 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                     <span className={`pb-[5px] ${ passwordError && 'text-error' }`}>Password</span>
 
                     <div className='relative w-full flex'>
+
+                        {copied !== undefined && <SmallInfoPanel
+                            state={copied ? '1' : '0'}
+                        />}
 
                         <div className='absolute left-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
                             <Image

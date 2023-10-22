@@ -1,8 +1,8 @@
 export interface InternalApiUploadRequest {
     PasswordHash: string;
     FileName: string;
-    ExternalStorageToken: string;
     OriginalFileSize?: number;
+    FileData: Uint8Array;
 }
 
 export interface InternalApiUploadResponse {
@@ -11,7 +11,8 @@ export interface InternalApiUploadResponse {
 
 
 export interface InternalApiDownloadResponse {
-    externalStorageToken: string;
-    fileName: string;
-    originalFileSize: number;
+    FileName: string;
+    FileData: string | number[] | any;
+    OriginalFileSize: number;
+    PasswordHash: string;
 }

@@ -1,47 +1,11 @@
-import { PropsWithChildren, useEffect } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { useDataContext } from '../../../core/context/DataContext';
-import { FileReaderProvider } from '../../../core/context/FileReadContext';
-import { FileLoader } from '../../fileLoader/FileLoader';
-import { DownloadFile } from '../../fileDownloader/DownloadFile';
-import { useRouter } from 'next/router';
 
 
-
-export default function ChildrenWrapper({children}: PropsWithChildren): React.ReactElement {
+export default function ChildrenWrapper( { children }: PropsWithChildren ): React.ReactElement {
 
     const dataContext = useDataContext();
-
-    const router = useRouter();
-
-    const { query } = router;
-
-    useEffect( () => {
-        console.log( query )
-        if ( 'token' in query && query.token ) {
-            console.log( 'HERE' )
-            dataContext.setToken( query.token as string );
-        }
-    }, [ query ] );
-
-    const getCurrentView = (): React.ReactElement => {
-
-        if ( dataContext.link ) {
-            router.push( {
-                pathname: '/link-ready',
-                query: { link: dataContext.link }
-            } )
-            return <></>;
-        } else if ( !dataContext.link && !dataContext.token ) {
-            return <FileReaderProvider>
-                <FileLoader hasFile={dataContext.setHasFile} setLink={dataContext.setLink} />
-            </FileReaderProvider>;
-        } else if ( !dataContext.link && dataContext.token ) {
-            return <DownloadFile token={dataContext.token} />
-        }
-
-        return <></>
-    }
 
     return (
         <div className='w-[580px] sm:w-[90%]'>

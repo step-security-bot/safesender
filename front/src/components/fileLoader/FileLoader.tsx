@@ -1,7 +1,8 @@
-import pako from 'pako';
 import React, { useCallback, useState } from 'react';
 
 import { encrypt_async } from 'wasm-xchacha20-poly';
+
+import { encode } from "@msgpack/msgpack";
 
 import { Button } from '../shared/button/Button';
 import { caesar } from '../../core/helpers/caesar';
@@ -11,11 +12,12 @@ import { PasswordInput } from '../shared/passwordInput/PasswordInput';
 
 import shareIco from '../../../public/shareIco.svg';
 import { useLoader } from '../../core/context/LoaderContext';
-import { useFileReader } from '../../core/context/FileReadContext';
-import { ExternalUploadApiResponse } from '../../models/external-api';
-import { InternalApiUploadRequest, InternalApiUploadResponse } from '../../models/internal-api';
-import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
 import { useDataContext } from '../../core/context/DataContext';
+import { useFileReader } from '../../core/context/FileReadContext';
+import { fixPasswordLenIfNeeded } from '@/core/helpers/fixPasswordLenIfNeeded';
+import { InternalApiUploadRequest } from '../../models/internal-api';
+import { useErrorContext } from '../../core/context/ErrorContext';
+import { CORRECT_PASSWORD_LENGTH } from '../../core/configs/password-length';
 
 
 export interface FileLoaderProps {
@@ -31,17 +33,15 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     const dataContext = useDataContext();
     const loader = useLoader();
+    const errorContext = useErrorContext();
 
     const fileReader = useFileReader();
 
     const onDrop = useCallback( ( acceptedFiles: File[] ) => {
 
-        console.log( 'onDrop' );
-
         if ( acceptedFiles[ 0 ].size > ( 50 * 1048576 ) ) {
             alert( 'YOUR FILE IS SO HUGE! Try another one!' );
         } else {
-
             setFiles( acceptedFiles );
             dataContext.setHasFile( true );
         }
@@ -57,79 +57,35 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     const sendFileToInternalApi = async ( encryptedFile: any ) => {
 
-        const nameParts = files![ 0 ].name.split( '.' );
-        const fileExt = nameParts.pop();
-        const ciphered = caesar.cipher( 5, nameParts.join( '.' ) );
-
-        const fileName: string = `${ ciphered }.${ fileExt }`;
-
-        console.log( 'START_GET_VALUES' );
-
-        const vls = Object.values( encryptedFile );
-
-        console.log( 'FISH_GET_VALUES' );
-
-        console.log( 'CREATE_BODY' );
-
-        const body = JSON.stringify( {
-            FileBytes: btoa( JSON.stringify( vls ) ),
-            PasswordHash: getHashPassword( password! ),
-            FileName: fileName
+        // Create request body
+        const body = encode( {
+            FileData: encryptedFile,
+            ...getInternalMetadata(),
         } );
 
-        console.log( body );
-
-        console.log( 'SEnD_REQUEST' );
-
-
+        // Send request to API
         const res = await fetch( 'https://api.safesender.app/api/upload', {
             body,
             headers: { 'content-type': 'application/json' },
             method: 'POST',
         } );
 
-        const apiResponse = await res.json();
+        // Get response
+        try {
+            const apiResponse = await res.json();
 
-        if ( !apiResponse ) {
-            throw new Error( 'EMPTY API RESPONSE!' );
+            if ( !apiResponse ) {
+                errorContext.setShowDialog( true );
+                throw new Error( 'EMPTY API RESPONSE!' );
+            }
+
+            if ( 'token' in apiResponse && apiResponse.token ) {
+                // Set download file link in DataContext for move on another page
+                setLink( getUserDownloadURL( apiResponse.token ) );
+            }
+        } catch(ex) {
+            errorContext.setShowDialog( true );
         }
-
-        if ( 'token' in apiResponse && apiResponse.token ) {
-            setLink( getUserDownloadURL( apiResponse.token ) );
-        }
-    }
-
-    const sendFileToExternalApi = async ( encryptedFile: Uint8Array ) => {
-
-        const formData = new FormData();
-
-        console.log( encryptedFile )
-
-        formData.append( 'file', new Blob( [ encryptedFile ] ) );
-        // https://corsproxy.io/?
-        const response = await fetch( 'https://corsproxy.io/?https://api.filechan.org/upload', {
-            method: 'POST',
-            body: formData
-        } )
-            .catch( ( err ) => {
-                console.error( '[EXTERNAL_UPLOAD_ERROR]: ', err );
-                return err;
-            } );
-
-        const result: ExternalUploadApiResponse = await response.json();
-
-        console.log( '[EXTERNAL_UPLOAD_RESULT]:', result );
-
-        if ( result && result.status ) {
-
-            const fullUrl = result.data.file.url.full;
-
-            // Add proxy via https://corsproxy.io
-            const proxyUrl = `https://corsproxy.io/?${ fullUrl }`;
-
-            sendFileInfo( proxyUrl );
-        }
-
     }
 
     const getInternalMetadata = (): Pick<InternalApiUploadRequest, 'PasswordHash' | 'FileName' | 'OriginalFileSize'> | undefined => {
@@ -153,31 +109,6 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         }
     }
 
-    const sendFileInfo = async ( downloadURL: string ) => {
-
-        const response = await fetch( 'https://api.safesender.app/api/upload', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify( {
-                ...getInternalMetadata(),
-                ExternalStorageToken: downloadURL
-            } )
-        } );
-
-        const internalApiResult: InternalApiUploadResponse = await response.json();
-
-        console.log( '[Internal API Result]: ', internalApiResult );
-
-        if ( !internalApiResult ) {
-            throw new Error( '[EMPTY API RESPONSE]!' );
-        }
-
-
-        if ( 'token' in internalApiResult && internalApiResult.token ) {
-            setLink( getUserDownloadURL( internalApiResult.token ) );
-        }
-    }
-
     const shareClickHandler = async (): Promise<void> => {
 
         const reader = new FileReader();
@@ -186,47 +117,21 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
             setTimeout( async () => {
 
-                console.log( 'START' );
-
                 setIsFileReading( false );
 
                 loader.setIsLoading( false );
 
                 fileReader.setIsReadingFinished( true );
 
-                const encoder = new TextEncoder();
+                const textEncoder = new TextEncoder();
 
-                const correctPasswordLen: number = 32;
-                const finalPassword = fixPasswordLenIfNeeded( password, correctPasswordLen );
-                const encryptKey = encoder.encode( finalPassword );
-
-                // console.log('INIIAL: ', e.target.result);
-
-                const zipped = pako.deflate( e.target.result );
-
-                // console.log('DEFLATED: ', zipped);
-
-                console.log( 'START_Encrypt' );
-
-                const encryptedFile = await encrypt_async( zipped, encryptKey );
-
-                // const decryptedFile = await decrypt_async( encryptedFile, encryptKey );
-
-                // const unzipped = pako.inflate( decryptedFile );
-
-                // console.log('INFLATED: ',  unzipped );
-
-                // saveByteArrayAsFile( unzipped, files![ 0 ].name );
-
-                console.log( 'FInISH_Encrypt' );
+                const finalPassword = fixPasswordLenIfNeeded( password, CORRECT_PASSWORD_LENGTH );
+                const encryptKey = textEncoder.encode( finalPassword );
+                
+                const encryptedFile = await encrypt_async( new Uint8Array( e.target.result ), encryptKey );
 
                 try {
-
-                    // sendFileToInternalApi( encryptedFile );
-
-                    // send file to anonfiles directly
-                    sendFileToExternalApi( encryptedFile );
-
+                    sendFileToInternalApi( encryptedFile );
                 } catch ( err ) {
                     console.error( 'UPLOAD_REQUEST_ERROR: ', err );
                 }
@@ -243,9 +148,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         reader.onprogress = ( data: any ) => {
             if ( data.lengthComputable ) {
                 const progress = +( ( data.loaded / data.total ) * 100 ).toFixed( 2 );
-                console.log( progress, '%' )
                 fileReader.setProgress( progress );
-                console.log( progress );
             }
         }
 
@@ -254,15 +157,13 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
 
     const getUserDownloadURL = ( token: string ): string => {
         return process.env[ 'NODE_ENV' ] === 'development'
-            ? `http://localhost:3000/?token=${ token }`
-            : `https://safesender.app?token=${ token }`;
+            ? `http://localhost:3000/download?token=${ token }`
+            : `https://safesender.app/download?token=${ token }`;
     }
 
     return (
         <>
             <div className='flex flex-col items-center'>
-
-                {/* {true && <Loader />} */}
 
                 <div className='flex flex-col items-center pb-[24px] box-border'>
                     <span className='text-[32px] font-bold'>Upload Your File</span>
