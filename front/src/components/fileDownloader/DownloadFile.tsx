@@ -44,9 +44,9 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
                     const response = await fetch( 'https://api.safesender.app/api/download/' + token );
 
-                    const internalApiResponse = decode( await response.arrayBuffer() );
+                    const internalApiResponse = decode<InternalApiDownloadResponse>( await response.arrayBuffer() );
 
-                    convertFile( internalApiResponse );
+                    convertFile( internalApiResponse as InternalApiDownloadResponse );
 
                 } catch ( e ) {
                     console.log( 'unknown download error!' );
