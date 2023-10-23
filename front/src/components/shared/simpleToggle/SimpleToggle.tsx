@@ -12,7 +12,7 @@ export const SimpleToggle = ( { state, clickHandler }: SimpleToggleProps ) => {
     const theme = useTheme();
 
     return (
-        <div onClick={() => clickHandler( !state )}>
+        <div className={'cursor-pointer'} onClick={() => clickHandler( !state )}>
 
             <svg width="42" height="44" viewBox="0 0 42 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 

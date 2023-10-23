@@ -1,12 +1,14 @@
 import Image from 'next/image';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import eyeClose from '../../../../public/eye-close.svg';
 import eyeOpen from '../../../../public/eye-open.svg';
+import copyIco from '../../../../public/copy.svg';
 
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
 
 import { passwordRegex } from '../../../core/configs/regexp';
+import { SmallInfoPanel } from '../smallInfoPanel/SmallInfoPanel';
 
 
 function getRandomPassword( length: number ): string {
@@ -43,8 +45,24 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
     const [ isHidePass, setIsHidePass ] = useState<boolean>( true );
     const [ passwordError, setPasswordError ] = useState<boolean>( false );
     const [ inpValue, setInpValue ] = useState<string>( '' );
+    const [ copied, setCopied ] = useState<boolean | undefined>( undefined );
 
     const inpRef = useRef<any>();
+
+    useEffect( () => {
+
+        if ( copied ) {
+            setTimeout( () => {
+                setCopied( false );
+            }, 3000 );
+
+        }
+
+        if ( !copied ) {
+            setCopied( undefined )
+        }
+
+    }, [ copied ] );
 
     const generatePassToggleClicked = ( isActive: boolean ): void => {
         setIsGeneratePassActive( isActive );
@@ -65,6 +83,15 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
         setIsHidePass( !isHidePass );
     };
 
+    const copyClicked = (): void => {
+        if (navigator && navigator.clipboard) {
+            navigator.clipboard.writeText(inpRef.current.value);
+            setCopied(true);
+        } else {
+            console.error('DISABLED CLIPBOARD API!');
+        }
+    }
+
     const inputChangesHandler = ( { target }: any ): void => {
 
         setInpValue( target.value );
@@ -83,7 +110,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
         <div>
 
             {
-                hasGenerateToggle && <div className="relative left-[-10px] w-[225px] 
+                hasGenerateToggle && <div className="relative left-[-6px] w-[225px] 
                     flex items-center justify-between toggle-box pt-[10px] pb-[8px] box-border">
 
                     <label className='flex items-center w-full gap-2'>
@@ -99,26 +126,49 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                 <label className='text-[16px] font-bold flex flex-col relative'>
                     <span className={`pb-[5px] ${ passwordError && 'text-error' }`}>Password</span>
 
-                    <input
-                        ref={inpRef}
-                        value={inpValue}
-                        type="password"
-                        placeholder='Enter password'
-                        onChange={inputChangesHandler}
-                        className={`border-[1px] 
+                    <div className='relative w-full flex'>
+
+                        {copied !== undefined && <SmallInfoPanel
+                            state={copied ? '1' : '0'}
+                        />}
+
+                        <div className='absolute left-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                            <Image
+                                src={copyIco}
+                                onClick={copyClicked}
+                                alt='eye' />
+                        </div>
+
+                        <input
+                            ref={inpRef}
+                            value={inpValue}
+                            type="password"
+                            placeholder='Enter password'
+                            onChange={inputChangesHandler}
+                            className={`border-[1px] 
                                     text-[18px]
+                                    w-full
                                     font-normal
                                     rounded-[8px]
                                     border-gray 
                                     p-[20px] 
+                                    pl-[55px]
+                                    pr-[55px]
                                     box-border1
+                                    active:outline-[#6599FF]
+                                    focus:outline-[#6599FF]
+                                    dark:focus:outline-[black]
+                                    dark:active:outline-[black]
                                     ${ passwordError && 'border-error focus:outline-error' }`} />
 
-                    <Image
-                        className='absolute right-[6%] top-[55%] opacity-50 cursor-pointer'
-                        src={isHidePass ? eyeClose : eyeOpen}
-                        onClick={eyeClicked}
-                        alt='eye' />
+                        <div className='absolute right-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                            <Image
+
+                                src={isHidePass ? eyeClose : eyeOpen}
+                                onClick={eyeClicked}
+                                alt='eye' />
+                        </div>
+                    </div>
 
                 </label>
 

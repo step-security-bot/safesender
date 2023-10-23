@@ -45,7 +45,7 @@ export const FileItem = ( { isBlured, isDeletable, file, fileSize, deleteFile }:
     };
 
     return (
-        <div className={`p-[18px] w-[95%] sm:w-[100%] rounded-[8px] bg-[#F3F3F3] flex items-center justify-between  flex-col box-border ${ isBlured && 'blur-md' }`}>
+        <div className={`p-[18px] w-[95%] sm:w-[100%] rounded-[8px] bg-[#F3F3F3] flex items-center justify-between  flex-col box-border ${ isBlured && 'blur-sm' }`}>
 
             <div className='w-full flex justify-between'>
 
@@ -63,12 +63,18 @@ export const FileItem = ( { isBlured, isDeletable, file, fileSize, deleteFile }:
 
                 </div>
 
-                {isDeletable && <Image src={closeIco} alt='close' onClick={deleteFile} className='cursor-pointer' />}
+                {
+                    isDeletable
+                    && <Image src={closeIco}
+                        alt='close'
+                        onClick={deleteFile}
+                        className='cursor-pointer' />
+                }
 
             </div>
 
             <div className='pt-[10px] w-full flex justify-center'>
-                { !!progress && <StatusBar />}
+                {!!progress && <StatusBar />}
             </div>
 
         </div>

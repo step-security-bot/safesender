@@ -1,6 +1,9 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-import Script from 'next/script'
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import Script from 'next/script';
+
+import Layout from '../components/layout/layout';
+
 
 export default function App( { Component, pageProps }: AppProps ) {
   return <>
@@ -18,7 +21,10 @@ export default function App( { Component, pageProps }: AppProps ) {
           });
         `,
       }} />
-    <Component {...pageProps} />
+      
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
   </>
   return
 }

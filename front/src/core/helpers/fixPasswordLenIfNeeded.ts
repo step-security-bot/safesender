@@ -1,5 +1,5 @@
 export function fixPasswordLenIfNeeded(password: string | null | undefined, desiredPasswordLen: number): string {
-    if (password == null) {
+    if (!password) {
         throw new Error("Password cannot be null or undefined");
     }
 
