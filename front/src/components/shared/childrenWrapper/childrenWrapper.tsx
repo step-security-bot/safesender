@@ -12,7 +12,7 @@ export default function ChildrenWrapper( { children }: PropsWithChildren ): Reac
 
             {
                 !dataContext.token && <div className="pt-[8px] h-[72px] sm:h-[auto] leading-[36px] mb-[24px] text-center m-auto font-medium text-white text-[24px]">
-                    Download the file in any format, encrypt it, and share it with anyone
+                    Upload the file in any format, encrypt it, and share it with anyone
                 </div>
             }
 
