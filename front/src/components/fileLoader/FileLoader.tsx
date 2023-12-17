@@ -64,7 +64,7 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
         } );
 
         // Send request to API
-        const res = await fetch( 'https://api.safesender.app/api/upload', {
+        const res = await fetch( `${process.env.NEXT_PUBLIC_INTERNAL_API}upload`, {
             body,
             headers: { 'content-type': 'application/json' },
             method: 'POST',

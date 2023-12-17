@@ -42,7 +42,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
 
                 try {
 
-                    const response = await fetch( 'https://api.safesender.app/api/download/' + token );
+                    const response = await fetch( `${ process.env.NEXT_PUBLIC_INTERNAL_API }download/${ token }` );
 
                     const internalApiResponse = decode<InternalApiDownloadResponse>( await response.arrayBuffer() );
 
@@ -103,6 +103,7 @@ export const DownloadFile = ( { token }: DownloadFileProps ): React.ReactElement
     }
 
     const checkEnteredPassword = ( password: string ) => {
+
         if ( !password ) {
             return;
         }
