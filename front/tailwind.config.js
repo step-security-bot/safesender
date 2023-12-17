@@ -41,6 +41,9 @@ module.exports = {
             desktop: { raw: "(min-height: 1024px)" },
             // sm: "640px",
             sm: { raw: "(max-width: 640px)" },
+
+            bigDesktop: { raw: "(min-width: 3000px)" },
+
             // => @media (min-width: 640px) { ... }
 
             md: "768px",
@@ -53,6 +56,7 @@ module.exports = {
             // => @media (min-width: 1280px) { ... }
 
             "2xl": "1536px",
+
             // => @media (min-width: 1536px) { ... }
         },
     },

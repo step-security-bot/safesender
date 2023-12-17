@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import eyeClose from '../../../../public/eye-close.svg';
 import eyeOpen from '../../../../public/eye-open.svg';
 import copyIco from '../../../../public/copy.svg';
+import okIco from '../../../../public/ok-gr.svg';
+
 
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
 
@@ -84,11 +86,11 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
     };
 
     const copyClicked = (): void => {
-        if (navigator && navigator.clipboard) {
-            navigator.clipboard.writeText(inpRef.current.value);
-            setCopied(true);
+        if ( navigator && navigator.clipboard ) {
+            navigator.clipboard.writeText( inpRef.current.value );
+            setCopied( true );
         } else {
-            console.error('DISABLED CLIPBOARD API!');
+            console.error( 'DISABLED CLIPBOARD API!' );
         }
     }
 
@@ -128,15 +130,19 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
 
                     <div className='relative w-full flex'>
 
-                        {copied !== undefined && <SmallInfoPanel
+                        {/* {copied !== undefined && <SmallInfoPanel
                             state={copied ? '1' : '0'}
-                        />}
+                        />} */}
 
-                        <div className='absolute left-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
+                        <div className='absolute left-[20px] top-[50%] translate-y-[-50%]  cursor-pointer'
+                            style={{ opacity: `${ !!copied ? '1' : '.5' }  ` }}
+
+                        >
                             <Image
-                                src={copyIco}
+                                src={!!copied ? okIco : copyIco}
                                 onClick={copyClicked}
-                                alt='eye' />
+                                alt='copy password button' />
+
                         </div>
 
                         <input
@@ -157,9 +163,16 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                                     box-border1
                                     active:outline-[#6599FF]
                                     focus:outline-[#6599FF]
+                                    active:outline
+                                    focus:outline
                                     dark:focus:outline-[black]
                                     dark:active:outline-[black]
-                                    ${ passwordError && 'border-error focus:outline-error' }`} />
+                                    ${ passwordError && 'border-error focus:outline-error' }`}
+                            style={{
+                                outlineColor: `${ passwordError ? '#FF614B' : 'initial' } `,
+                                borderColor: `${ passwordError ? 'transparent' : 'initial' }`
+                            }}
+                        />
 
                         <div className='absolute right-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
                             <Image

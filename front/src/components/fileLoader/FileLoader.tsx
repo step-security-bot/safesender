@@ -166,8 +166,8 @@ export const FileLoader = ( { hasFile, setLink }: FileLoaderProps ): React.React
             <div className='flex flex-col items-center'>
 
                 <div className='flex flex-col items-center pb-[24px] box-border'>
-                    <span className='text-[32px] font-bold'>Upload Your File</span>
-                    <span className='text-[18px] text-gray'>to encrypt the data </span>
+                    <span className='text-[32px] bigDesktop:leading-[84px] bigDesktop:text-[56px] font-bold'>Upload Your File</span>
+                    <span className='text-[18px] bigDesktop:leading-[42px] bigDesktop:text-[32px] text-gray'>to encrypt the data </span>
                 </div>
 
                 <FileSelector
