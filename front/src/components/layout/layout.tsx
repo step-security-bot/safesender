@@ -39,15 +39,15 @@ export default function Layout( { children }: PropsWithChildren ) {
 
                             <Header />
 
-                            <main className='bg-blue flex justify-center relative dark:bg-black overflow-hidden'>
+                            <main className='h-[calc(100vh-102px)] overflow-y-auto bg-blue flex justify-center relative dark:bg-black overflow-hidden'>
 
                                 <Image
-                                    className='sm:hidden select-none w-full absolute top-[-65px] left-0 right-0 bottom-0'
+                                    className='bg sm:hidden select-none w-full max-h-[calc(100vh-100px)] absolute top-[-50px] left-0 right-0 bottom-0'
                                     src={waves}
                                     priority={true}
                                     alt='bg' />
 
-                                <div className='h-[922px] flex items-center justify-center relative'>
+                                <div className='h-[922px] bigDesktop:h-[1541px] bigDesktop:w-[1191px] flex items-center justify-center relative'>
 
                                     <ChildrenWrapper>{children}</ChildrenWrapper>
 

@@ -8,19 +8,19 @@ export default function ChildrenWrapper( { children }: PropsWithChildren ): Reac
     const dataContext = useDataContext();
 
     return (
-        <div className='w-[580px] sm:w-[90%]'>
+        <div className='w-[580px] bigDesktop:w-[100%] sm:w-[90%]'>
 
             {
-                !dataContext.token && <div className="pt-[8px] h-[72px] sm:h-[auto] leading-[36px] mb-[24px] text-center m-auto font-medium text-white text-[24px]">
+                !dataContext.token && <div className="pt-[8px] h-[72px] bigDesktop:h-[144px] sm:h-[auto] bigDesktop:text-[56px] leading-[36px] bigDesktop:leading-[72px] mb-[24px] text-center m-auto font-medium text-white text-[24px]">
                     Download the file in any format, encrypt it, and share it with anyone
                 </div>
             }
 
             <div className={` ${ dataContext.hasFile && 'h-auto' }`}>
 
-                <div className='sm:border-[0px] m-auto p-[10px] border-[#9FBEF9] dark:border-[#838383]
+                <div className='sm:border-[0px] bigDesktop:h-[1333px] m-auto p-[10px] border-[#9FBEF9] dark:border-[#838383]
                  dark:bg-[#838383] bg-[#9FBEF9] rounded-[16px] box-border flex items-center justify-center'>
-                    <div className='bg-white rounded-[16px] p-[24px] box-border'>
+                    <div className='bg-white bigDesktop:h-[100%] bigDesktop:w-full rounded-[16px] p-[24px] box-border'>
 
                         {children}
 
