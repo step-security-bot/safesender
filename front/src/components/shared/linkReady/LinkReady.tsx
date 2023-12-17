@@ -7,6 +7,9 @@ import okIco from './../../../../public/ok.svg';
 import { Button } from '../button/Button';
 import { SmallInfoPanel } from '../smallInfoPanel/SmallInfoPanel';
 
+import { Button } from '../button/Button';
+import { SmallInfoPanel } from '../smallInfoPanel/SmallInfoPanel';
+
 
 export const LinkReadyBox = ( { extLink }: { extLink: string } ): React.ReactElement => {
 
@@ -56,30 +59,35 @@ export const LinkReadyBox = ( { extLink }: { extLink: string } ): React.ReactEle
 
                     <div className='border relative w-full
             h-auto break-words text-center border-gray text-[18px] font-[500] rounded-[8px] p-[25px] box-border text-gray'>
+
                         {/* {copied !== undefined && <SmallInfoPanel
                             state={copied ? '1' : '0'}
                         />} */}
+
                         {link}
                     </div>
 
                     <div className='pt-[24px] w-full box-border'>
+
                         {
                             !!copied ?
 
                             <Button
-                            disabled={false}
-                            labelText='Copied!'
-                            onClickHandler={clickHandler}
-                            color='#1DBE19'
-                            icon={okIco}
-                        />
+                              disabled={false}
+                              labelText='Copied!'
+                              onClickHandler={clickHandler}
+                              color='#1DBE19'
+                              icon={okIco}
+                            />
                             
                             : <Button
-                            disabled={false}
-                            labelText='Copy to clipboard'
-                            onClickHandler={clickHandler}
-                            icon={copyIco}
-                        />}
+                                disabled={false}
+                                labelText='Copy to clipboard'
+                                onClickHandler={clickHandler}
+                                icon={copyIco}
+                              />
+                      }
+
                     </div>
                 </>
             }

@@ -6,6 +6,7 @@ import eyeOpen from '../../../../public/eye-open.svg';
 import copyIco from '../../../../public/copy.svg';
 import okIco from '../../../../public/ok-gr.svg';
 
+
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
 
 import { passwordRegex } from '../../../core/configs/regexp';
@@ -141,6 +142,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                                 src={!!copied ? okIco : copyIco}
                                 onClick={copyClicked}
                                 alt='copy password button' />
+
                         </div>
 
                         <input
