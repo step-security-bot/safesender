@@ -3,7 +3,8 @@ name: Deploy to Server via SSH
 on:
   push:
     branches:
-      - test-deploy
+      - dev
+      - main
      
 jobs:
   deploy:
