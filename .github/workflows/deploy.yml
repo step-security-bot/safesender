@@ -18,5 +18,6 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd /home/common/project/safesender
+          git checkout dev && git fetch && git pull
           docker system prune -a --force # temp solution
           make stop && make build && make start
