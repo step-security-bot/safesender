@@ -1,4 +1,4 @@
-import { passwordRegex } from '../core/configs/regexp';
+import { PASSWORD_REGEXP } from '../core/configs/regexp';
 
 
 export function useRandomPassword( length: number ): string {
@@ -17,7 +17,7 @@ export function useRandomPassword( length: number ): string {
 
     do {
         generatePassword();
-    } while ( !passwordRegex.test( password ) );
+    } while ( !PASSWORD_REGEXP.test( password ) );
 
     return password;
 }

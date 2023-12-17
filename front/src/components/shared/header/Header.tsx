@@ -49,6 +49,7 @@ export const Header = () => {
                     <h2 className='font-bold text-white text-[20px] pl-[7px] pt-[3px] box-border'>
                         <span>Safe</span>Sender
                     </h2>
+                    
                 </Link>
             </div>
 

@@ -18,6 +18,7 @@ export default function MainBox(): React.ReactElement {
         if ( dataContext.link ) {
             router.push( { pathname: '/link-ready' } )
         }
+
     }, [ dataContext, router ] );
 
     return (

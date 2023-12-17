@@ -6,11 +6,8 @@ import eyeOpen from '../../../../public/eye-open.svg';
 import copyIco from '../../../../public/copy.svg';
 import okIco from '../../../../public/ok-gr.svg';
 
-
 import { SimpleToggle } from '../simpleToggle/SimpleToggle';
-
-import { passwordRegex } from '../../../core/configs/regexp';
-import { SmallInfoPanel } from '../smallInfoPanel/SmallInfoPanel';
+import { PASSWORD_REGEXP } from '../../../core/configs/regexp';
 
 
 function getRandomPassword( length: number ): string {
@@ -29,8 +26,7 @@ function getRandomPassword( length: number ): string {
 
     do {
         generatePassword();
-        console.log( 'generatePassword' );
-    } while ( !passwordRegex.test( password ) );
+    } while ( !PASSWORD_REGEXP.test( password ) );
 
     return password;
 }
@@ -86,19 +82,22 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
     };
 
     const copyClicked = (): void => {
+
         if ( navigator && navigator.clipboard ) {
             navigator.clipboard.writeText( inpRef.current.value );
             setCopied( true );
-        } else {
-            console.error( 'DISABLED CLIPBOARD API!' );
+            return;
         }
+
+        console.error( 'DISABLED CLIPBOARD API!' );
     }
 
     const inputChangesHandler = ( { target }: any ): void => {
-
         setInpValue( target.value );
+    }
 
-        if ( inpRef.current.value && !passwordRegex.test( inpRef.current.value ) ) {
+    const checkPasssword = () => {
+        if ( inpRef.current.value && !PASSWORD_REGEXP.test( inpRef.current.value ) ) {
             setPasswordError( true );
             setPassword( '' );
         } else {
@@ -116,8 +115,11 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                     flex items-center justify-between toggle-box pt-[10px] pb-[8px] box-border">
 
                     <label className='flex items-center w-full gap-2'>
+
                         <SimpleToggle state={isGeneratePassActive} clickHandler={generatePassToggleClicked} />
+
                         <div className='text-gray text-[18px]'>Generate a password</div>
+
                     </label>
 
                 </div>
@@ -126,22 +128,19 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
             <div>
 
                 <label className='text-[16px] font-bold flex flex-col relative'>
+
                     <span className={`pb-[5px] ${ passwordError && 'text-error' }`}>Password</span>
 
                     <div className='relative w-full flex'>
 
-                        {/* {copied !== undefined && <SmallInfoPanel
-                            state={copied ? '1' : '0'}
-                        />} */}
-
                         <div className='absolute left-[20px] top-[50%] translate-y-[-50%]  cursor-pointer'
-                            style={{ opacity: `${ !!copied ? '1' : '.5' }  ` }}
+                            style={{ opacity: `${ !!copied ? '1' : '.5' }  ` }}>
 
-                        >
                             <Image
                                 src={!!copied ? okIco : copyIco}
                                 onClick={copyClicked}
-                                alt='copy password button' />
+                                alt='copy password button'
+                            />
 
                         </div>
 
@@ -151,6 +150,7 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                             type="password"
                             placeholder='Enter password'
                             onChange={inputChangesHandler}
+                            onBlur={checkPasssword}
                             className={`border-[1px] 
                                     text-[18px]
                                     w-full
@@ -175,22 +175,26 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                         />
 
                         <div className='absolute right-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
-                            <Image
 
+                            <Image
                                 src={isHidePass ? eyeClose : eyeOpen}
                                 onClick={eyeClicked}
-                                alt='eye' />
+                                alt='eye'
+                            />
+
                         </div>
+
                     </div>
 
                 </label>
 
                 <div className={`
                 pt-[4px] pb-[15px] pl-[2px] text-[14px] font-normal text-gray ${ passwordError && ' text-error' }`}>
-                    Enter a password that includes at least one uppercase letter, one number, and one symbol (such as !@#$%^&*)
+                    Enter a 6-32 symbols password that includes at least one uppercase letter, one number, and one symbol (such as !@#$%^&*)
                 </div>
 
             </div>
+
         </div>
     )
 }

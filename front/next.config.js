@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
-    output: 'standalone',
+    output: "standalone",
     eslint: {
         ignoreDuringBuilds: true,
     },
@@ -13,14 +13,14 @@ const nextConfig = {
 
         if (isServer) {
             config.output.webassemblyModuleFilename =
-              './../static/wasm/[modulehash].wasm';
-          } else {
+                "./../static/wasm/[modulehash].wasm";
+        } else {
             config.output.webassemblyModuleFilename =
-              'static/wasm/[modulehash].wasm';
-          }
-        
+                "static/wasm/[modulehash].wasm";
+        }
+
         return config;
     },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;

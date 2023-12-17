@@ -42,7 +42,7 @@ module.exports = {
             // sm: "640px",
             sm: { raw: "(max-width: 640px)" },
 
-            bigDesktop: { raw: "(min-width: 3000px)" },
+            // bigDesktop: { raw: "(min-height: 2000px)" },
 
             // => @media (min-width: 640px) { ... }
 
