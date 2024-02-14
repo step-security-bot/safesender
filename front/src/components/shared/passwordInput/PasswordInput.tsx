@@ -109,16 +109,19 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
 
     return (
         <div>
-
             {
                 hasGenerateToggle && <div className="relative left-[-6px] w-[225px] 
                     flex items-center justify-between toggle-box pt-[10px] pb-[8px] box-border">
 
                     <label className='flex items-center w-full gap-2'>
 
-                        <SimpleToggle state={isGeneratePassActive} clickHandler={generatePassToggleClicked} />
+                        <SimpleToggle
+                            state={isGeneratePassActive}
+                            clickHandler={generatePassToggleClicked}
+                            label='Generate a password'
+                        />
 
-                        <div className='text-gray text-[18px]'>Generate a password</div>
+                        {/* <div className='text-gray text-[18px]'>Generate a password</div> */}
 
                     </label>
 

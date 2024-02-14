@@ -4,15 +4,16 @@ import { useTheme } from '../../../core/context/ThemeContext';
 export interface SimpleToggleProps {
     state: boolean;
     clickHandler: any;
+    label: string;
 }
 
 
-export const SimpleToggle = ( { state, clickHandler }: SimpleToggleProps ) => {
+export const SimpleToggle = ( { state, clickHandler, label }: SimpleToggleProps ) => {
 
     const theme = useTheme();
 
     return (
-        <div className={'cursor-pointer'} onClick={() => clickHandler( !state )}>
+        <div className={'cursor-pointer flex items-center gap-2'} onClick={() => clickHandler( !state )}>
 
             <svg width="42" height="44" viewBox="0 0 42 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 
@@ -40,6 +41,8 @@ export const SimpleToggle = ( { state, clickHandler }: SimpleToggleProps ) => {
 
                 </defs>
             </svg>
+            
+            <span className='text-gray text-[18px]'>{label}</span>
         </div>
     )
 }
