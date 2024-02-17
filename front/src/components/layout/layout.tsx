@@ -15,8 +15,6 @@ import Head from 'next/head';
 
 export default function Layout( { children }: PropsWithChildren ) {
 
-
-
     return (
         <>
 
@@ -32,10 +30,10 @@ export default function Layout( { children }: PropsWithChildren ) {
                 <LoaderProvider>
 
                     <DataProvider>
-                        
+
                         <ErrorProvider>
 
-                            <ErrorDialog/>
+                            <ErrorDialog />
 
                             <Header />
 
