@@ -4,6 +4,10 @@ import Script from 'next/script';
 
 import Layout from '../components/layout/layout';
 
+import Modal from 'react-modal';
+
+Modal.setAppElement('#__next');
+
 
 export default function App( { Component, pageProps }: AppProps ) {
   return <>
