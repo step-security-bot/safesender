@@ -21,10 +21,10 @@ export function Downloaded(): React.ReactElement {
     }
 
     return (
-        <div className='w-[510px] flex flex-col gap-[24px]'>
+        <div className='w-[510px] sm:m-auto sm:w-[90%] sm:h-full flex flex-col gap-[24px]'>
             <div className='flex flex-col gap-[8px]'>
                 <div className='flex gap-[8px] justify-center items-center text-center'>
-                    <Image src={theme.darkMode ? blackIcon : blackIcon} alt='icon' />
+                    <Image src={blackIcon} alt='icon' />
                     <span className='text-[32px] font-semibold leading-[48px]'>Downloaded</span>
                 </div>
                 <div className='text-center'>

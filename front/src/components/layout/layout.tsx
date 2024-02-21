@@ -54,7 +54,7 @@ export default function Layout( { children }: PropsWithChildren ) {
                                     priority={true}
                                     alt='bg' />
 
-                                <div className='h-[922px] sm:h-auto bigDesktop:h-[1541px] bigDesktop:w-[1191px] flex items-center justify-center relative'>
+                                <div className='h-[922px] sm:min-h-[80vh] sm:h-auto bigDesktop:h-[1541px] bigDesktop:w-[1191px] flex items-center justify-center relative'>
 
                                     <ChildrenWrapper>{children}</ChildrenWrapper>
 
