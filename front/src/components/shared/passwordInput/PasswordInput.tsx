@@ -166,15 +166,9 @@ export const PasswordInput = ( { hasGenerateToggle, setPassword }: PasswordInput
                                     box-border1
                                     active:outline-[#6599FF]
                                     focus:outline-[#6599FF]
-                                    active:outline
-                                    focus:outline
                                     dark:focus:outline-[black]
                                     dark:active:outline-[black]
-                                    ${ passwordError && 'border-error focus:outline-error' }`}
-                            style={{
-                                outlineColor: `${ passwordError ? '#FF614B' : 'initial' } `,
-                                borderColor: `${ passwordError ? 'transparent' : 'initial' }`
-                            }}
+                                    ${ passwordError ? 'border-[red] focus:outline-error active:outline-error' : '' }`}
                         />
 
                         <div className='absolute right-[20px] top-[50%] translate-y-[-50%] opacity-50 cursor-pointer'>
