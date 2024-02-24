@@ -1,15 +1,14 @@
-import { AppTheme } from '../../../models/themes';
 import styles from './ThemeToggle.module.css';
+
 
 export interface ToggleProps {
     darkMode?: boolean;
     clickHandler: any;
 }
 
-
 export const ThemeToggle = ( { darkMode, clickHandler }: ToggleProps ) => {
     return (
-        <div className="theme-switcher" onClick={clickHandler}>
+        <div className="theme-switcher cursor-pointer" onClick={clickHandler}>
             <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 
                 <rect className={styles.whiteBorder} x="0.5" y="0.5" width="35" height="23" rx="11.5" />
@@ -34,8 +33,6 @@ export const ThemeToggle = ( { darkMode, clickHandler }: ToggleProps ) => {
                             <rect width="16" height="16" fill="white" />
                         </clipPath>
                     </defs>
-
-
 
                     <defs>
                         <clipPath id="clip0_28_112">

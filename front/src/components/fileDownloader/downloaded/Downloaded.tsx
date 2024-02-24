@@ -1,17 +1,14 @@
 import Image from 'next/image';
 
 import blackIcon from '../../../../public/blackIcoCircle.svg';
-import blueIcon from '../../../../public/blueIcoCircle.svg';
 import tumbUp from '../../../../public/thumb-up-line.svg';
 
-import { useTheme } from '../../../core/context/ThemeContext';
-import { Button } from '../../shared/button/Button';
 import { useRouter } from 'next/router';
+import { Button } from '../../shared/button/Button';
 
 
 export function Downloaded(): React.ReactElement {
 
-    const theme = useTheme();
     const router = useRouter();
 
     const clickHandler = (): void => {
