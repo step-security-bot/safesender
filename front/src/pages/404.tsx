@@ -1,13 +1,18 @@
-import ret from '../../public/ret.svg';
+import { useRouter } from 'next/router';
 
+import ret from '../../public/ret.svg';
 import { Button } from '../components/shared/button/Button';
 
-export default function Custom404() {
+
+export default function Custom404(): React.ReactElement {
+
+    const router = useRouter();
 
     const clickHandler = () => {
-
+        router.push( {
+            pathname: '/'
+        } );
     }
-
 
     return (
         <div className='w-[510px] sm:m-auto sm:w-[90%] sm:h-full flex flex-col gap-[24px] items-center'>
