@@ -1,15 +1,20 @@
 import { PropsWithChildren } from 'react';
 import { useDataContext } from '../../../core/context/DataContext';
+import { useRouter } from 'next/router';
 
 export default function ChildrenWrapper( { children }: PropsWithChildren ): React.ReactElement {
 
     const dataContext = useDataContext();
 
+    const router = useRouter();
+
+    console.log(router)
+
     return (
         <div className='w-[580px] bigDesktop:w-[100%] sm:w-[90%]'>
 
             {
-                dataContext.token ? '' : <div className="pt-[8px] h-[72px] bigDesktop:h-[144px] sm:h-[auto] bigDesktop:text-[56px] leading-[36px] bigDesktop:leading-[72px] mb-[24px] text-center m-auto font-medium text-white text-[24px]">
+                (dataContext.token || router.route === '/404') ? '' : <div className="pt-[8px] h-[72px] bigDesktop:h-[144px] sm:h-[auto] bigDesktop:text-[56px] leading-[36px] bigDesktop:leading-[72px] mb-[24px] text-center m-auto font-medium text-white text-[24px]">
                     Upload the file in any format, encrypt it, and share it with anyone
                 </div>
             }
